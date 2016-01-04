@@ -45,10 +45,14 @@ exports.OrgProfile = React.createClass({
 
   handleSubmit: function(e) {
     e.preventDefault();
+    var aofs = (ReactDOM.findDOMNode(this.refs.aofs).value).trim();
+    if (aofs[aofs.length - 1] === ";") {
+      aofs = aofs.slice(0, aofs.length-1);
+    }
+    aofs = aofs.replace(/;\s*|\r\n|\r|\n/g,"/b$117/").split("/b$117/")
     var formData = {
       about: ReactDOM.findDOMNode(this.refs.about).value,
-      areas_of_focus: (ReactDOM.findDOMNode(this.refs.aofs).value).trim()
-        .replace(/\s|;\s|\r\n|\r|\n/g,"/b$117/").split("/b$117/")
+      areas_of_focus: aofs
     };
     this.update(formData);
   },

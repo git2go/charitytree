@@ -90,8 +90,8 @@ exports.Media = React.createClass({
   profile_and_banner_img: function() {
     var profile_img = (this.state.media.profile_img['filename'] === undefined && this.props.media.profile_img === undefined)
       ? "http://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-Male-silhouette-avatar-profile-picture-Stock-Vector-profile.jpg"
-      : (this.state.username) ? 'http://localhost:4000/dashboard_data/profile_img/'+ this.props.username + '/' + this.state.profile_img.filename
-      : 'http://localhost:4000/dashboard_data/profile_img/'+ this.props.username + '/' + this.props.media.profile_img.filename;
+      : (this.state.username) ? '/dashboard_data/profile_img/'+ this.props.username + '/' + this.state.profile_img.filename
+      : '/dashboard_data/profile_img/'+ this.props.username + '/' + this.props.media.profile_img.filename;
     return (
       <div className="row">
         <div className="col s12 center-align">
@@ -119,7 +119,7 @@ exports.Media = React.createClass({
             {this.props.media.images.map(function(file, idx) {
               return (
                 <div key={idx} className="col s12 m6 l4">
-                  <img className="materialboxed responsive-img" src={'http://localhost:4000/dashboard_data/org/media/'+file} />
+                  <img className="materialboxed responsive-img" src={'/dashboard_data/org/media/'+file} />
                 </div>
               );
             })}
@@ -133,7 +133,7 @@ exports.Media = React.createClass({
             return (
               <div key={idx} className="col s12 m6 l4">
                 <video className="responsive-video" controls >
-                  <source src={'http://localhost:4000/dashboard_data/org/media/'+file}/>
+                  <source src={'/dashboard_data/org/media/'+file}/>
                 </video>
               </div>
             );

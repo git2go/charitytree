@@ -12,7 +12,7 @@ exports.DonorFeed = React.createClass({
   },
 
   componentWillMount: function () {
-    console.log('Feed Component is Mounting')
+    // console.log('Feed Component is Mounting')
     this.setState({feedContent: feedData});
   },
 
@@ -26,13 +26,13 @@ exports.DonorFeed = React.createClass({
         <h3>Feed</h3>
         <div className="row">
           {feedContent.reverse().map(function (item, idx) {
-            var attachment = '';
+            var attachment;
             if (item.attachment_type === 'image') {
               attachment = <img className="materialboxed responsive-img" src={item.attachment}/>;
-              $('.feed-attachment').addClass('img');
+              // $('.feed-attachment').addClass('img');
             } else if (item.attachment_type === 'video') {
               attachment = <video className="responsive-video" src={item.attachment} controls/>;
-              $('.feed-attachment').addClass('vid');
+              // $('.feed-attachment').addClass('vid');
             }
 
             return (
@@ -51,9 +51,9 @@ exports.DonorFeed = React.createClass({
                       </div>
                     </div>
                   </li>
-                  <li className="collection-item">
-                    <div>{attachment}</div>
-                  </li>
+                  {attachment
+                    ? <li className="collection-item"><div>{attachment}</div></li>
+                    : ''}
                 </ul>
               </div>
             );

@@ -83,6 +83,11 @@ app.get('/dashboard_data', function(req, res, next) {
         .exec(function(err, org) {
           if (err) { handleError(req, res, err, 500, 'Could not complete operation.'); }
           else {
+            org['feed'] = org.feed.filter(function(item) {
+              return item.user !== org.name;
+            }).sort(function(item1, item2) {
+              return new Date(item2.created_date) - new Date(item1.created_date);
+            });
             res.status(200).send({status: 200, results: org, userType: req.session.user.type });
           }
         });
@@ -136,7 +141,7 @@ app.get('/dashboard_data/org/media/:id', function(req, res, next) {
 });
 
 app.get('/dashboard_data/project/media/:id', function(req, res, next) {
-  if (req.params.id) {
+  if (req.params.id !== 'undefined') {
     var readstream = _db.gridfs.createReadStream({ _id: req.params.id });
     readstream.pipe(res);
   } else {
@@ -437,7 +442,6 @@ app.post('/dashboard/profile', function(req, res, next) {
           org.save(function(err, updatedOrg) {
             if (err) throw err;
             else {
-              console.log('Made update');
               // feed.emit('org_update', updatedOrg._id, {message: updatedOrg.name + ' has updated their profile', attachment: ''});
               res.status(201).send({ status: 201, results: updatedOrg });
             }
@@ -505,7 +509,7 @@ app.post('/dashboard/profile_img/upload', multer().single('profile_img'), functi
       org.feed.push({
         user: org.name,
         message: 'changed profile image',
-        attachment: 'http://localhost:4000/organization/profile_img/'+ org._id,
+        attachment: '/organization/profile_img/'+ org._id,
         attachment_type: 'image',
         created_date: new Date()
       });
@@ -551,7 +555,7 @@ app.post('/dashboard/org/media/upload', multer().array('media'), function(req, r
           org.feed.push({
             user: org.name,
             message: 'uploaded a new ' + file.mimetype.slice(0, 5),
-            attachment: 'http://localhost:4000/dashboard_data/org/media/'+ fileId,
+            attachment: '/dashboard_data/org/media/'+ fileId,
             attachment_type: file.mimetype.slice(0, 5),
             created_date: new Date()
           });
@@ -604,7 +608,7 @@ app.post('/dashboard/project/media/upload', multer().array('media'), function(re
                   org.feed.push({
                     user: org.name,
                     message: 'uploaded a new '+ file.mimetype.slice(0, 5) + ' for project: ' + project.title,
-                    attachment: 'http://localhost:4000/dashboard_data/project/media/'+ fileId,
+                    attachment: 'dashboard_data/project/media/'+ fileId,
                     attachment_type: file.mimetype.slice(0, 5),
                     created_date: new Date()
                   });

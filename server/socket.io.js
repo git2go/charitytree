@@ -113,6 +113,8 @@ module.exports = function(server) {
               // }
               var orgFeed = org.feed.filter(function(item) {
                 return item.user !== org.name;
+              }).sort(function(item1, item2) {
+                return new Date(item2.created_date) - new Date(item1.created_date);
               });
               client.emit('storeFeed', orgFeed);
             }
@@ -262,7 +264,7 @@ module.exports = function(server) {
         }
       });
     });
-      
+
   });
 
   return feed;

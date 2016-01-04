@@ -10,17 +10,17 @@ import {MediaUpload} from '../media_upload.js'
 exports.Projects = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (this.props.projects.length !== nextProps.projects.length) {
-      this.setState({ projects: nextProps.projects, action: 'display' })
+      this.setState({ projects: nextProps.projects, action: '' })
     } else {
-      this.setState({ action: 'display' });
+      this.setState({ action: '' });
     }
   },
 
   getInitialState: function() {
     return {
-      action: 'display',
+      action: '',
       projects: [],
-      project_to_edit: {}
+      currentProject: {}
     }
   },
 
@@ -61,15 +61,23 @@ exports.Projects = React.createClass({
   },
 
   edit: function(project) {
-    this.setState({ project_to_edit: project, action: 'edit' });
+    this.setState({ currentProject: project, action: 'edit' });
+  },
+
+  display: function(project) {
+    this.setState({ currentProject: project, action: 'display' });
   },
 
   createProject: function() {
     return <div><ProjectCreate submitHandler={this.submitHandler} /></div>
   },
 
+  displayProject: function(project) {
+    return <div><ProjectView project={this.state.currentProject} /></div>
+  },
+
   editProject: function() {
-    return <div><ProjectEdit submitHandler={this.submitHandler} project={this.state.project_to_edit} /></div>
+    return <div><ProjectEdit submitHandler={this.submitHandler} project={this.state.currentProject} /></div>
   },
 
   submitHandler: function() {
@@ -95,7 +103,7 @@ exports.Projects = React.createClass({
                 key={idx}
                 project={project}
                 edit={this.edit}
-                setProject={this.props.setProject}
+                display={this.display}
               />
             );
           }.bind(this))}
@@ -107,7 +115,7 @@ exports.Projects = React.createClass({
   render: function() {
     switch (this.state.action) {
       case 'display':
-        return this.showProjects();
+        return this.displayProject();
         break;
       case 'create':
         return this.createProject();
@@ -128,8 +136,8 @@ var ProjectBlurb = React.createClass({
     }
   },
 
-  setProject: function(){
-    this.props.setProject(this.props.project);
+  displayProject: function() {
+    this.props.display(this.props.project);
   },
 
   editProject: function(e) {
@@ -146,17 +154,17 @@ var ProjectBlurb = React.createClass({
   display: function() {
     var obj = this.state.project || this.props.project;
     var img = (obj.images && obj.images.length)
-      ? "http://localhost:4000/dashboard_data/project/media/" + obj.images[0]
+      ? "/dashboard_data/project/media/" + obj.images[0]
       : "./images/FEATURE-Leaf-300_tcm18-150961.jpg";
 
     return (
       <div className="col s12 m6 l4">
         <div className="card hoverable">
-          <div className="card-image" onClick={this.setProject} style={{maxHeight: "250px", overflow: "hidden"}}>
+          <div className="card-image" onClick={this.displayProject} style={{maxHeight: "250px", overflow: "hidden"}}>
             <img className="responsive-img materialboxed" src={img} />
             <span className="card-title shadow">{this.props.project.title}</span>
           </div>
-          <div className="card-content" onClick={this.setProject}>
+          <div className="card-content" onClick={this.displayProject}>
             <p className="line-clamp line-clamp-3">{"Description: " + this.props.project.info}</p>
             <p>{"Created: " + moment(this.props.project.created_date).format('MMMM D, YYYY')}</p>
             <p>{"End Date: " + moment(this.props.project.end_date).format('MMMM D, YYYY')}</p>
@@ -187,5 +195,112 @@ var ProjectBlurb = React.createClass({
 
   render: function() {
     return (this.state.display) ? this.display() : this.mediaUpload();
+  }
+});
+
+var ProjectView = React.createClass ({
+  displayName: 'ProjectView',
+
+  getInitialState: function(){
+    return {
+      project: {}
+    };
+  },
+
+  componentDidMount: function () {
+  },
+
+  render: function() {
+    var project = this.props.project;
+    console.log(project)
+    var needs;
+
+    if (project.needs_list.length > 0) {
+      needs = project.needs_list.map(function(need, index) {
+        return (
+          <Need
+            key={index}
+            title={need.title}
+            description={need.description}
+            cost={need.cost}
+            quantity_needed={need.quantity_needed}
+            number_purchased={need.number_purchased}
+          />
+        );
+      }.bind(this));
+    }
+
+    var percentRaised = {width: (project.amount.current / project.amount.goal * 100) + "%"};
+
+    return (
+      <div>
+        <div className="center-align">
+          <h3>{project.title}</h3>
+        </div>
+
+        <div id="description" className="col s12">
+          <h5>Description</h5>
+          {project.info}
+        </div>
+
+        <div className="row">
+          <div className="col s12 m8">
+            <img className="responsive-img materialboxed" style={{margin: "auto"}} src="http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg" />
+          </div>
+          <div className="col s12 m4">
+            <h3>Goal: ${project.amount.goal}</h3>
+            <h4>Progress: ${project.amount.current}</h4>
+            <div className="progress">
+              <div className="determinate" style={percentRaised}></div>
+            </div>
+            <h5>Number of donors: {project.total_donors_participating}</h5>
+            <h6>Status: {project.status}</h6>
+          </div>
+        </div>
+
+        <div className="row">
+          <h5>Needs</h5>
+          <div className="col s12 m8">
+            {needs ? needs : "No needs to display"}
+          </div>
+        </div>
+
+        <div className="row project-media">
+          <div className="row">
+            <h5>Images</h5>
+            {project.images.map(function(image, idx) {
+              return <img key={idx}
+                src={'/dashboard_data/project/media/' + image}
+                style={{width: '200px', height: '200px'}}
+                />
+            })}
+          </div>
+
+          <div className="row">
+            <h5>Videos</h5>
+            {project.videos.map(function(video, idx) {
+              return <video key={idx}
+                src={'/dashboard_data/project/media/' + video} controls>
+                style={{width: '320px', height: '240px'}}
+                </video>
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
+
+var Need = React.createClass({
+  render: function() {
+    return (
+      <div>
+        <span className="card-title">{this.props.title}</span>
+        <p>description: {this.props.description}</p>
+        <p>cost: {this.props.cost}</p>
+        <p>needed: {this.props.quantity_needed}</p>
+        <p>purchased: {this.props.number_purchased || 0}</p>
+      </div>
+    );
   }
 });
