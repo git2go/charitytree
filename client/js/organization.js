@@ -98,9 +98,9 @@ var Organization = exports.Organization = React.createClass({
       }).map(function (project, index) {
         console.log("cP/project:",project);
           var projectImg = (project.images.length)
-            ? "http://localhost:4000/dashboard_data/project/media/" + project.images[0]
+            ? "/dashboard_data/project/media/" + project.images[0]
             : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
-          
+
         return (
           <a className="collection-item avatar black-text" key={index} onClick={this.handleClick} style={{cursor: "pointer"}}>
             <img src={projectImg ? projectImg : "https://c2.staticflickr.com/6/5739/24077966285_c5f0d47dcf_n.jpg"} className="circlex"/>
@@ -121,7 +121,7 @@ var Organization = exports.Organization = React.createClass({
         return moment(project.end_date).diff(today) < 0;
       }).map(function (project, index) {
         var projectImg = (project.images.length)
-          ? "http://localhost:4000/dashboard_data/project/media/" + project.images[0]
+          ? "dashboard_data/project/media/" + project.images[0]
           : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
         return (
           <a className="collection-item avatar black-text" key={index} onClick={this.handleClick} style={{cursor: "pointer"}}>

@@ -125,15 +125,15 @@ module.exports = function(server) {
 
     //this is an organization or donor action
     client.on('disconnect', function() {
-      console.log('Client has been disconnected');
+      // console.log('Client has been disconnected');
       delete clients[client.id];
-      console.log('Client with id: ' + client.id  + ' has logged out');
+      // console.log('Client with id: ' + client.id  + ' has logged out');
       client.emit('stopPolling');
     });
 
     //this is a donor action
     client.on('follow', function(donorID, orgID) {
-      console.log('Follow Data: ', donorID, orgID);
+      // console.log('Follow Data: ', donorID, orgID);
       var now = new Date();
       Model.Organization.findById(orgID, function(err, org) {
         if (err) throw err;
@@ -207,7 +207,6 @@ module.exports = function(server) {
 
     //donor action
     client.on('endorsement', function(donorID, orgID) {
-      console.log('Doing');
       var now = new Date();
       Model.Donor.findById(donorID, function(err, donor) {
         if (err) throw err;
@@ -227,7 +226,6 @@ module.exports = function(server) {
                   created_date: now
                 });
                 org.save();
-                console.log('Saved endorsement')
               });
             }
           });

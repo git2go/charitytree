@@ -72,11 +72,11 @@ exports.Dashboard = React.createClass({
           this.logout();
         }
         if (xhr.readyState == 0 || xhr.status == 0) {
-          console.log('Not really an error');
           return;
         }
-        else
-          console.log("Dashboard/getData/error", xhr, status, error);
+        else {
+        console.log("Dashboard: ", xhr, status, error);  
+        }
       }.bind(this)
     });
   },
