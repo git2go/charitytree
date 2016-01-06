@@ -25,7 +25,7 @@ exports.DonorFeed = React.createClass({
       <div className="container center-align">
         <h3>Feed</h3>
         <div className="row">
-          {feedContent.reverse().map(function (item, idx) {
+          {feedContent.map(function (item, idx) {
             var attachment;
             if (item.attachment_type === 'image') {
               attachment = <img className="materialboxed responsive-img" src={item.attachment}/>;
