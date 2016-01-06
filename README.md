@@ -2,11 +2,7 @@
 
 Synopsis
 
-At the top of the file there should be a short introduction and/ or overview that explains what the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
-
-Motivation
-
-A short description of the motivation behind the creation and maintenance of the project. This should explain why the project exists.
+Charity Tree is a platform that allows donors to see how their money is used when they donate to an organization. Donors contribute to specific projects and organizations update donors through media content (i.e. images, videos, etc).
 
 Tech Stack
  - ReactJS
