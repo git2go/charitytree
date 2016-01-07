@@ -19,7 +19,6 @@ var IP = '127.0.0.1', PORT = 4000;
 
 var app = express();
 var server = require('http').Server(app);
-// var io = require('socket.io')(server);
 var feed = require('./socket.io.js')(server);
 
 server.listen(PORT, IP);

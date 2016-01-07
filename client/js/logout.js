@@ -12,7 +12,8 @@ const Logout = React.createClass({
         localStorage.clear();
         this.props.isLoggedIn();
         // this.props.history.pushState(null, `/`);
-        window.location.href = 'http://54.213.164.135';
+        // window.location.href = 'http://54.213.164.135';
+        window.location.href = 'http://127.0.0.1:4000';
       }.bind(this),
       error: function (xhr, status, err) {
         console.log("Error posting to: " + xhr, status, err.toString());
