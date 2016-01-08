@@ -125,15 +125,12 @@ module.exports = function(server) {
 
     //this is an organization or donor action
     client.on('disconnect', function() {
-      // console.log('Client has been disconnected');
       delete clients[client.id];
-      // console.log('Client with id: ' + client.id  + ' has logged out');
       client.emit('stopPolling');
     });
 
     //this is a donor action
     client.on('follow', function(donorID, orgID) {
-      // console.log('Follow Data: ', donorID, orgID);
       var now = new Date();
       Model.Organization.findById(orgID, function(err, org) {
         if (err) throw err;
@@ -157,12 +154,7 @@ module.exports = function(server) {
                   });
                   org.save(function(err) {
                     if (err) throw err;
-                    donor.save(function(err, updatedDonor) {
-                      if (err) throw err;
-                      else {
-                        console.log('Saving donor info')
-                      }
-                    });
+                    donor.save();
                   });
                 }
               }

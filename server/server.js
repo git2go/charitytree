@@ -49,38 +49,20 @@ app.use(session({
   cookie: { maxAge: 3600000 }
 }));
 
-// app.use(function(req, res, next) {
-//   // if now() is after `req.session.cookie.expires`
-//   var now = new Date();
-//   if (now > req.session.cookie.expires) {
-//     //regenerate the session
-//     req.session.regenerate(function(err) {
-//       console.log('Session was regenerated');
-//     });
-//   }
-//   next();
-// });
-
-// var util = require('util');
-// var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
-// var log_stdout = process.stdout;
-// console.log = function(d) { //
-//   log_file.write(util.format(d) + '\n');
-//   log_stdout.write(util.format(d) + '\n');
-// };
-
 //================================== GET ====================================//
 app.get('/dashboard_data', function(req, res, next) {
   if (req.session && req.session.user) {
-    console.log('In session');
     if (req.session.user.type === 'organization') {
       Model.Organization.findOne({_id: req.session.user.uid})
         .select('-password -profile_img.data')
         .populate('projects endorsements')
         .lean()
         .exec(function(err, org) {
-          if (err) { handleError(req, res, err, 500, 'Could not complete operation.'); }
-          else {
+          if (err) {
+            handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard_data',
+              action: 'Model.Organization.findOne', message: 'Could not complete operation.'
+            });
+          } else {
             org['feed'] = org.feed.filter(function(item) {
               return item.user !== org.name;
             }).sort(function(item1, item2) {
@@ -94,8 +76,11 @@ app.get('/dashboard_data', function(req, res, next) {
         .populate('sponsored_projects following endorsements')
         .lean()
         .exec(function(err, donor) {
-        if (err) { handleError(req, res, err, 500, 'Could not complete operation.'); }
-        else {
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard_data',
+            action: 'Model.Donor.findOne', message: 'Could not complete operation.'
+          });
+        } else {
           donor['feed'] = donor.feed.filter(function(item) {
             return item.user !== donor.name.first + " " + donor.name.last;
           }).sort(function(item1, item2) {
@@ -125,7 +110,11 @@ app.get('/dashboard_data/projects', function(req, res, next) {
       .populate('projects')
       .lean()
       .exec(function(err, projects) {
-        if (err) handleError(req, res, err, 500, 'Could not complete operation.');
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard_data/projects',
+            action: 'Model.Organization.findOne', message: 'Could not complete operation.'
+          });
+        }
         else { res.status(200).send({ status: 200, results: projects }); }
       });
     }
@@ -160,8 +149,11 @@ app.get('/organization_get/:id', function(req, res, next) {
     .populate('projects endorsements')
     .lean()
     .exec(function(err, org) {
-     if (err) handleError(req, res, err, 500, 'Could not complete operation.');
-     else {
+     if (err) {
+       handleError({ req: req, res: res, err: err, code: 500, url: '/organization_get/:id',
+         action: 'Model.Organization.findOne', message: 'Could not complete operation.'
+       });
+     } else {
        res.status(200).send({status: 200, results: org });
      }
    });
@@ -173,8 +165,11 @@ app.get('/organization_get/:id', function(req, res, next) {
 app.get('/organization/profile_img/:id', function(req, res, next) {
   if (req.params.id !== 'undefined') {
     Model.Organization.findById(req.params.id, function (err, org) {
-      if (err) handleError(req, res, err, 500, 'Could not complete operation.');
-      else {
+      if (err) {
+        handleError({ req: req, res: res, err: err, code: 500, url: '/organization/profile_img/:id',
+          action: 'Model.Organization.findById', message: 'Could not complete operation.'
+        });
+      } else {
         if (org) {
           streamifier.createReadStream(org.profile_img.data).pipe(res);
         } else {
@@ -193,9 +188,10 @@ app.get('/project_get/:id', function(req, res, next) {
      .populate('_org').lean()
      .exec(function(err, project) {
       if (err) {
-        handleError(req, res, err, 500, 'Could not complete operation.');
-      }
-      else {
+        handleError({ req: req, res: res, err: err, code: 500, url: '/project_get/:id',
+          action: 'Model.Project.findOne', message: 'Could not complete operation.'
+        });
+      } else {
         if (project) {
           if (project['_org']) {
             var keys = ['feed', 'password', 'followers', 'profile_img'];
@@ -218,10 +214,12 @@ app.get('/project_get/:id', function(req, res, next) {
 app.get('/dashboard_data/profile_img/:user/:filename', function(req, res, next) {
   if (req.params.user !== 'undefined' && req.params.filename !== 'undefined') {
     Model.Organization.findOne({ username: req.params.user }, function(err, org) {
-      if (err) { console.error(err); res.status(400).send('Could not retrieve data'); }
-      else {
-        streamifier.createReadStream(org.profile_img.data).pipe(res);
+      if (err) {
+        handleError({ req: req, res: res, err: err, code: 500, url: '/project_get/:id',
+          action: 'Model.Project.findOne', message: 'Could not retrieve data'
+        });
       }
+      else { streamifier.createReadStream(org.profile_img.data).pipe(res); }
     });
   } else {
     res.status(404).send({status: 404, message: "Resource not found"});
@@ -232,24 +230,27 @@ app.post('/signup_post', function(req, res, next) {
   //check if username already exists
   Model.Organization.findOne({username: req.body.username}, function(err, found) {
     if (err) {
-      console.error("Signup Error:", err);
-      res.status(500).send({ status: 500, message: "Could not complete signup operation." });
+      handleError({ req: req, res: res, err: err, code: 500, url: '/signup_post',
+        action: 'Model.Organization.findOne', message: "Could not complete signup operation."
+      });
     }
     if (found) {//username was found in organization collection
       res.status(401).send({ status: 401, message: "Username is already taken." });
     } else {
       Model.Donor.findOne({username: req.body.username}, function(err, found) {
         if (err) {
-          console.error("Signup Error:", err);
-          res.status(500).send({ status: 500, message: "Could not complete signup operation." });
+          handleError({ req: req, res: res, err: err, code: 500, url: '/signup_post',
+            action: 'Model.Donor.findOne', message: "Could not complete signup operation."
+          });
         }
         if (found) {//username was found in donor collection
           res.status(401).send({ status: 401, message: "Username is already taken." });
         } else {//username was found in either organization or donor collection
           bcrypt.hash(req.body.pwd, null, null, function(err, hash) {//hash password
             if (err) {
-              console.error("Signup Error:", err);
-              res.status(500).send({ status: 500, message: "Could not complete signup operation." });
+              handleError({ req: req, res: res, err: err, code: 500, url: '/signup_post',
+                action: 'bcrypt.hash', message: "Could not complete signup operation."
+              });
             }
             if (req.body.userType === 'Organization') {
               var orgData = {
@@ -259,10 +260,10 @@ app.post('/signup_post', function(req, res, next) {
               };
               Model.Organization.create(orgData, function(err, org) {
                 if (err) {
-                  console.error("Signup Error:", err);
-                  res.status(500).send({ status: 500, message: "Could not complete signup operation." });
+                  handleError({ req: req, res: res, err: err, code: 500, url: '/signup_post',
+                    action: 'Model.Organization.create', message: "Could not complete signup operation."
+                  });
                 }
-                console.log("app.post/org:",org);
                 req.session.user = { uid: org._id, type: 'organization' };
                 org.feed.push({
                   user: 'Charity Collective',
@@ -282,8 +283,9 @@ app.post('/signup_post', function(req, res, next) {
               };
               Model.Donor.create(donorData, function(err, donor) {
                 if (err) {
-                  console.error("Signup Error:", err);
-                  res.status(500).send({ status: 500, message: "Could not complete signup operation." });
+                  handleError({ req: req, res: res, err: err, code: 500, url: '/signup_post',
+                    action: 'Model.Donor.create', message: "Could not complete signup operation."
+                  });
                 } else {
                   req.session.user = { uid: donor._id, type: 'donor' };
                   donor.push({
@@ -308,19 +310,20 @@ app.post('/login_post', function(req, res, next) {
   //check if user is a donor
   Model.Donor.findOne({ username: req.body.username }, function(err, donor) {
     if (err) {
-      console.error("Login Error:", err);
-      res.status(500).send({ status: 500, message: "Login Error." });
+      handleError({ req: req, res: res, err: err, code: 500, url: '/login_post',
+        action: 'Model.Donor.findOne', message: "Login Error."
+      });
     }
     if (donor) { //is user a donor
       bcrypt.compare(req.body.pwd, donor.password, function(err, result) {
         if (err) {
-          console.error("Login Error:", err);
-          res.status(500).send({ status: 500, message: "Login validation failed." });
+          handleError({ req: req, res: res, err: err, code: 500, url: '/login_post',
+            action: 'donor bcrypt.compare', message: "Login validation failed."
+          });
         } else {
           if (result) {
             //create session
             req.session.user = { uid: donor._id, type: 'donor' };
-            console.log('Session has been set');
             res.status(201).send({ status: 201, token: req.session.user.uid });
           } else { //found donor but password doesn't match
             res.status(401).send({ status: 401, message: "Invalid username/password combination" });
@@ -331,19 +334,20 @@ app.post('/login_post', function(req, res, next) {
       //check if user is an organization
       Model.Organization.findOne({ username: req.body.username }, function(err, org) {
         if (err) {
-          console.error("Login Error:", err);
-          res.status(500).send({ status: 500, message: "Login Error." });
+          handleError({ req: req, res: res, err: err, code: 500, url: '/login_post',
+            action: 'Model.Organization.findOne', message: "Login Error."
+          });
         }
         if (org) { //is user an organization
           bcrypt.compare(req.body.pwd, org.password, function(err, result) {
             if (err) {
-              console.error("Login Error:", err);
-              res.status(500).send({ status: 500, message: "Login validation failed." });
+              handleError({ req: req, res: res, err: err, code: 500, url: '/login_post',
+                action: 'org bcrypt.compare', message: "Login validation failed."
+              });
             }
             if (result) {
               //create session
               req.session.user = { uid: org._id, type: 'organization' };
-              console.log('Session has been set');
               res.send({ status: 201, token: req.session.user.uid });
             } else { //found org but password doesn't match
               res.status(401).send({ status: 401, message: "Invalid username/password combination" });
@@ -360,9 +364,10 @@ app.post('/login_post', function(req, res, next) {
 app.post('/logout_post', function(req, res, next) {
   req.session.destroy(function(err) {
     if (err) {
-      console.error("err",err);
+      handleError({ req: req, res: res, err: err, code: 500, url: '/logout_post',
+        action: 'req.session.destroy', message: "Logout failed."
+      });
     }
-    // console.log('destroyed session');
     res.status(201).send({status: 201, message: 'User has been logged out'});
   });
 });
@@ -371,10 +376,14 @@ app.post('/organization/follow/:id', function(req, res, next) {
   var now = new Date();
   if (req.session && req.session.user && req.params.id) {
     Model.Organization.findById(req.params.id, function(err, org) {
-      if (err) { console.error(err); }
+      if (err) {
+        handleError({ req: req, res: res, err: err, code: 500, url: '/organization/follow/:id',
+          action: 'Model.Organization.findById', message: "Could not complete operation"
+        });
+      }
       if (org) {
         Model.Donor.findById(req.session.user.uid, function(err, donor) {
-          if (err) { console.error(err); }
+          if (err) { handleError(req, res, err, 500); }
           if (donor) {
             org.followers.push(donor);
             org.feed.push({
@@ -383,16 +392,21 @@ app.post('/organization/follow/:id', function(req, res, next) {
               created_date: now
             });
             org.save(function(err) {
-              if (err) { console.error(err); }
-              donor.following.push(org);
-              donor.feed.push({
-                user: donor.name.first + " " + donor.name.last,
-                message: 'started following ' + org.name,
-                created_date: now
-              });
-              donor.save(function() {
-                res.status(201).send({status: 201, message: 'Success'});
-              });
+              if (err) {
+                handleError({ req: req, res: res, err: err, code: 500, url: '/organization/follow/:id',
+                  action: 'org.save', message: "Could not complete operation"
+                });
+              } else {
+                donor.following.push(org);
+                donor.feed.push({
+                  user: donor.name.first + " " + donor.name.last,
+                  message: 'started following ' + org.name,
+                  created_date: now
+                });
+                donor.save(function() {
+                  res.status(201).send({status: 201, message: 'Success'});
+                });
+              }
             });
           }
         });
@@ -409,13 +423,20 @@ app.post('/dashboard/profile', function(req, res, next) {
       Model.Organization.findById(req.session.user.uid)
         .select('name username about areas_of_focus')
         .exec(function(err, org) {
-        if (err) throw err;
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile',
+            action: 'Model.Organization.findById', message: "Could not complete operation"
+          });
+        }
         if (org) {
           org.about = req.body.about;
           org.areas_of_focus = req.body.areas_of_focus;
           org.save(function(err, updatedOrg) {
-            if (err) throw err;
-            else {
+            if (err) {
+              handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile',
+                action: 'org.save', message: "Could not complete operation"
+              });
+            } else {
               res.status(201).send({ status: 201, results: updatedOrg });
             }
           });
@@ -423,14 +444,24 @@ app.post('/dashboard/profile', function(req, res, next) {
       });
     } else if (req.session.user.type === 'donor') {
       Model.Donor.findById(req.session.user.uid, 'name username email areas_of_focus', function(err, donor) {
-        if (err) throw err;
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile',
+            action: 'Model.Donor.findById', message: "Could not complete operation"
+          });
+        }
         if (donor) {
           donor.name = req.body.name;
           donor.email = req.body.email;
           donor.areas_of_focus = req.body.areas_of_focus;
           donor.save(function(err, updatedDonor) {
-            if (err) throw err;
-            else { res.status(201).send({ status: 201, results: updatedDonor }); }
+            if (err) {
+              handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile',
+                action: 'donor.save', message: "Could not complete operation"
+              });
+            }
+            else {
+              res.status(201).send({ status: 201, results: updatedDonor });
+            }
           });
         }
       });
@@ -441,32 +472,34 @@ app.post('/dashboard/profile', function(req, res, next) {
 });
 
 app.post('/dashboard/project/create', function(req, res, next) {
-  console.log('in server projcreate and req.body is ', req.body);
   if (req.session && req.session.user) {
       var newProject = req.body.projectData;
-      console.log('New Project: ', newProject);
       newProject._org = req.session.user.uid;
-      res.status(201).send('Success');
-      // Model.Project.create(newProject, function(err, project) {
-      //   if (err) {
-      //     res.status(500).send({ status: 500, message: "Could not complete operation." });
-      //     throw err;
-      //   }
-      //   else {
-      //     Model.Organization.findOne({_id: req.session.user.uid}, function(err, org) {
-      //       if (err) { throw err; }
-      //       else {
-      //         org.projects.push(project); //save project to organization's array of projects
-      //         org.save(function(err, org) {
-      //           if (err) { throw err; }
-      //           else {
-      //             res.status(201).send({ status: 201, message: "You are logged in" });
-      //           }
-      //         });
-      //       }
-      //     });
-      //   }
-      // });
+      Model.Project.create(newProject, function(err, project) {
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/create',
+            action: 'Model.Project.create', message: "Could not complete operation"
+          });
+        }
+        else {
+          Model.Organization.findOne({_id: req.session.user.uid}, function(err, org) {
+            if (err) { throw err; }
+            else {
+              org.projects.push(project); //save project to organization's array of projects
+              org.save(function(err, org) {
+                if (err) {
+                  handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/create',
+                    action: 'org.save', message: "Could not complete operation"
+                  });
+                }
+                else {
+                  res.status(201).send({ status: 201, message: "You are logged in" });
+                }
+              });
+            }
+          });
+        }
+      });
   } else {
     res.status(401).send({ status: 401, message: "Unauthorized to access dashboard" });
   }
@@ -474,8 +507,11 @@ app.post('/dashboard/project/create', function(req, res, next) {
 
 app.post('/dashboard/profile_img/upload', multer().single('profile_img'), function(req, res, next) {
   Model.Organization.findById({ _id: req.session.user.uid }, function(err, org) {
-    if (err) { console.error(err); res.status(400).send('Could not retrieve data'); }
-    else {
+    if (err) {
+      handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile_img/upload',
+        action: 'Model.Organization.findById', message: "Could not complete operation"
+      });
+    } else {
       org.profile_img.data = req.file.buffer;
       org.profile_img.contentType = req.file.mimetype;
       org.profile_img.filename = req.file.originalname;
@@ -487,8 +523,11 @@ app.post('/dashboard/profile_img/upload', multer().single('profile_img'), functi
         created_date: new Date()
       });
       org.save(function(err, currOrg) {
-        if (err) { console.error("Profile Image save error: ", err); }
-        console.log(currOrg.feed)
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/profile_img/upload',
+            action: 'org.save', message: "Could not complete operation"
+          });
+        }
         res.status(201).send({ status: 201, results: {
           contentType: currOrg.profile_img.contentType,
           filename: currOrg.profile_img.filename }
@@ -516,13 +555,15 @@ app.post('/dashboard/org/media/upload', multer().array('media'), function(req, r
 
     streamifier.createReadStream(file.buffer).pipe(writeStream);
     writeStream.on('close', function() {
-      // console.log("File write was successful");
       //store fileId in media property of organization
       Model.Organization.findById({ _id: req.session.user.uid })
        .select('images videos feed')
        .exec(function(err, org) {
-        if (err) { throw err; }
-        else {
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/org/media/upload',
+            action: 'Model.Organization.findById', message: "Could not complete operation"
+          });
+        } else {
           if (file.mimetype.slice(0, 6) === 'image/') { org.images.push(fileId); }
           else if (file.mimetype.slice(0, 6) === 'video/') { org.videos.push(fileId); }
           org.feed.push({
@@ -533,8 +574,11 @@ app.post('/dashboard/org/media/upload', multer().array('media'), function(req, r
             created_date: new Date()
           });
           org.save(function(err, updatedOrg) {
-            if (err) { throw err; }
-            else {
+            if (err) {
+              handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/org/media/upload',
+                action: 'org.save', message: "Could not complete operation"
+              });
+            } else {
               res.status(201).send({ status: 201,
                 results: {images: updatedOrg.images, videos: updatedOrg.videos}});
             }
@@ -563,18 +607,27 @@ app.post('/dashboard/project/media/upload', multer().array('media'), function(re
 
     streamifier.createReadStream(file.buffer).pipe(writeStream);
     writeStream.on('close', function() {
-      console.log("File write was successful");
       //store fileId in images/videos property of project
       Model.Project.findById({ _id: req.body.project }, function(err, project) {
-        if (err) { throw err; }
-        else {
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/media/upload',
+            action: 'Model.Project.findById', message: "Could not complete operation"
+          });
+        } else {
           if (file.mimetype.slice(0, 6) === 'image/') { project.images.push(fileId); }
           else if (file.mimetype.slice(0, 6) === 'video/') { project.videos.push(fileId); }
           project.save(function(err, updatedProject) {
-            if (err) { throw err; }
-            else {
+            if (err) {
+              handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/media/upload',
+                action: 'project.save', message: "Could not complete operation"
+              });
+            } else {
               Model.Organization.findById(project._org || req.session.user.uid, function(err, org) {
-                if (err) throw err;
+                if (err) {
+                  handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/media/upload',
+                    action: 'Model.Organization.findById', message: "Could not complete operation"
+                  });
+                }
                 if (org) {
                   org.feed.push({
                     user: org.name,
@@ -602,19 +655,26 @@ app.post('/post_search', function(req, res, next) {
     { areas_of_focus: {$all: aofs} },
     { name: {$in: aofs} },
     { username: {$in: aofs} }
-    ]}).select('-password -feed -profile_img.data')
+    ]
+  }).select('-password -feed -profile_img.data')
     .lean()
     .exec(function (err, orgs) {
-      if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
-      else {
+      if (err) {
+        handleError({ req: req, res: res, err: err, code: 500, url: '/post_search',
+          action: 'Model.Organization.find', message: "Could not complete operation"
+        });
+      } else {
         Model.Project.find({ $or: [
           { areas_of_focus: {$all: aofs} },
           { title: {$in: aofs} }
           ]})
           .lean()
           .exec(function (err, projects) {
-          if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
-          else {
+          if (err) {
+            handleError({ req: req, res: res, err: err, code: 500, url: '/post_search',
+              action: 'Model.Project.find', message: "Could not complete operation"
+            });
+          } else {
             res.status(201).send({ status: 201, results: {orgs: orgs, projects: projects} });
           }
         });
@@ -629,7 +689,11 @@ app.post('/dashboard/project/update', function(req, res, next) {
 
 app.post('/dashboard/project/needs/update', function(req, res, next) {
   Model.Project.findById(req.body._id, function(err, project) {
-    if (err) console.error(err);
+    if (err) {
+      handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/needs/update',
+        action: 'Model.Project.findById', message: "Could not complete operation"
+      });
+    }
     if (project) {
       project.amount.current = req.body.amount.current;
       req.body.needs_list.forEach(function(need) {
@@ -638,11 +702,13 @@ app.post('/dashboard/project/needs/update', function(req, res, next) {
         pn.number_participants = (pn.number_participants == null) ? 1 : pn.number_participants++;
       });
       project.total_donors_participating = (project.total_donors_participating == null)
-        ? 1
-        : project.total_donors_participating++;
+        ? 1 : project.total_donors_participating++;
       project.save(function(err, updatedProject) {
-        if (err) throw err;
-        res.status(201).send({status: 201, data: updatedProject });
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/project/needs/update',
+            action: 'project.save', message: "Could not complete operation"
+          });
+        } else { res.status(201).send({status: 201, data: updatedProject }); }
       });
     } else {
       res.status(400).send({status: 400, message: 'Could not complete request'});
@@ -652,23 +718,49 @@ app.post('/dashboard/project/needs/update', function(req, res, next) {
 
 app.post('/dashboard/donor/endorsement', function(req, res, next) {
   Model.Endorsement.findOne({title: req.body.title}, function(err, found) {
-    if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
+    if (err) {
+      handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+        action: 'Model.Endorsement.findOne', message: "Could not complete operation"
+      });
+    }
     if (!found) {
       Model.Endorsement.create(req.body, function(err, endorsement) {
-        if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
+        if (err) {
+          handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+            action: 'Model.Endorsement.create', message: "Could not complete operation"
+          });
+        }
         if (endorsement) {
           Model.Organization.findById(endorsement.org, function(err, org) {
-            if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
+            if (err) {
+              handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+                action: 'Model.Organization.findById', message: "Could not complete operation"
+              });
+            }
             if (org) {
               org.endorsements.push(endorsement);
               org.save(function(err) {
-                if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
+                if (err) {
+                  handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+                    action: 'org.save', message: "Could not complete operation"
+                  });
+                }
                 Model.Donor.findById(endorsement.author, function(err, donor) {
-                  if (err) { handleError(req, res, err, 500, 'Could not complete operation'); }
+                  if (err) {
+                    handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+                      action: 'Model.Donor.findById', message: "Could not complete operation"
+                    });
+                  }
                   if (donor) {
                     donor.endorsements.push(endorsement);
                     donor.save(function(err, updatedDonor) {
-                      res.status(201).send({status: 201, results: updatedDonor});
+                      if (err) {
+                        handleError({ req: req, res: res, err: err, code: 500, url: '/dashboard/donor/endorsement',
+                          action: 'donor.save', message: "Could not complete operation"
+                        });
+                      } else {
+                        res.status(201).send({status: 201, results: updatedDonor});
+                      }
                     });
                   }
                 });
@@ -689,7 +781,7 @@ app.get('*', function (req, res, next){
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-var handleError = function(req, res, err, statusCode, msg) {
-  console.log("Error: ", err);
-  res.status(statusCode).send({status: statusCode, message: msg});
+var handleError = function(errorObj) {
+  console.log("Error:", errorObj.err, "Url:", errorObj.url, "Action:", errorObj.action);
+  res.status(errorObj.code).send({status: errorObj.code, message: errorObj.message });
 };
