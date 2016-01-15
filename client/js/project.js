@@ -21,14 +21,11 @@ exports.Project = React.createClass ({
   },
 
   componentDidMount: function () {
-    console.log('inside of project at beginning of componentDidMount');
-    console.log("inside projpage and locsto.currPojObj is ",localStorage.currentProjID);
 
     $.ajax({
         url:'/project_get/'+localStorage.currentProjID,
         method: "GET",
         success: function (data) {
-          console.log("on success in projdid with params.id and res.data is ", data.results);
 
           this.setState({
             project: data.results
@@ -37,30 +34,23 @@ exports.Project = React.createClass ({
           $('.materialboxed').materialbox();
           $('ul.tabs').tabs(); //both of these needed
           $('ul.tabs').tabs('select_tab', 'tab_id'); //both of these needed
-          console.log('inside of success of projdid and this.state.project ', this.state.project);
         }.bind(this),
         error: function (xhr, status, err) {
           console.error(xhr, status, err.toString());
         }.bind(this)
       });
 
-    console.log('inside of componentDidMount and state.project is ', this.state.project);
   },
 
   setCurrentOrg: function(){
-    console.log('inside of setCurrentOrg');
-    console.log('this.props.searchResults.orgs is ', this.props.searchResults.orgs);
     for(var i = 0; i < this.props.searchResults.orgs.length; i++){
-      console.log('orgs is ', this.props.searchResults.orgs[i]);
       if(this.props.searchResults.orgs[i]._id === this.props.currentProject.org){
-        console.log('inside of if statement');
         this.props.setOrganization(this.props.searchResults.orgs[i]);
       }
     }
   },
 
   navToOrg: function(){
-    console.log("Project/nTO/this.state.project._org.name:",this.state.project._org.name);
     localStorage.setItem('currentOrganization', this.state.project._org._id);
     this.props.navigateToOrganizationPage();
   },
@@ -70,7 +60,6 @@ exports.Project = React.createClass ({
   },
 
   render: function() {
-    //console.log("Project/this.props.searchResults.projects: ", this.props.searchResults.projects);
     // var project = this.props.searchResults.projects.filter(function(project){
     //   if(project._id === this.props.projectId) {
     //     return project;
@@ -82,15 +71,12 @@ exports.Project = React.createClass ({
       // var org = JSON.parse(localStorage.getItem('currOrgObj'));
 
       var needs;
-      console.log(this.state.project)
       var img = (this.state.project.images.length)
       ? "/dashboard_data/project/media/" + this.state.project.images
       : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
 
-      console.log("Project/render/project.needs_list:",project.needs_list);
       if (project.needs_list.length > 0) {
         needs = project.needs_list.map(function (need, index) {
-          console.log("Project/render/needs/need:", need);
           return (
             <Needs
               key={index}

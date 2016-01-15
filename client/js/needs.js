@@ -7,7 +7,6 @@ exports.Needs = React.createClass({
   },
 
   render: function() {
-    console.log("Needs/render/this.props:",this.props);
     return (
       <div className="card blue-grey darken-1" onClick={this.navigateToDonate}>
         <div className="card-content white-text">
@@ -27,7 +26,6 @@ exports.Needs = React.createClass({
 
 exports.DonateNeeds = React.createClass({
   updateNumberPurchased: function (e) {
-    //console.log("DonateNeeds/uNP/this.props.arrIndex:",this.props.arrIndex);
     var need = {
       arrIndex: this.props.arrIndex,
       number_purchased: e.target.value
@@ -37,7 +35,6 @@ exports.DonateNeeds = React.createClass({
 
   render: function() {
     var subTotal = this.props.cost * this.props.number_purchased;
-    //console.log("Needs/render/this.props.quantity_needed:",this.props.quantity_needed);
     return (
       <div className="row valign-wrapper">
         <div className="col s4">

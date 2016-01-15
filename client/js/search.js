@@ -5,11 +5,9 @@ import { TagContainer, Tag } from './tagContainer.js';
 
 exports.Search = React.createClass({
   componentWillMount: function() {
-    console.log('CWM fired');
   },
 
   componentDidMount: function() {
-    console.log('CDM fired');
   },
 
   render: function () {
@@ -74,11 +72,8 @@ var OrganizationResults = React.createClass({
 var Organization = React.createClass({
   setOrganization: function() {
     localStorage.currentOrgID = this.props.org._id;
-    console.log('Set local storage organization');
     this.props.setOrganization(this.props.org);
-    console.log('inside of search.js and localstorage is ', localStorage);
     localStorage.currentOrganization = this.props.org._id;
-    console.log('inside of search.js and localstorage.currOrg is ', localStorage.currentOrganization);
   },
 
   render: function () {
@@ -106,7 +101,6 @@ var Organization = React.createClass({
 
 var ProjectResults = React.createClass({
   render: function () {
-    console.log("ProjectResults/render/this.props.searchResultsProjects:",this.props.searchResultsProjects);
     if (this.props.searchResultsProjects) {
       var projects = this.props.searchResultsProjects.map(function (project, index) {
         return (
@@ -132,8 +126,6 @@ var ProjectResults = React.createClass({
 
 var Project = React.createClass({
   setProject: function(){
-    console.log('inside of search.js in set project');
-        console.log('inside of search.js and localStorage.currentProjID is ', localStorage.currentProjID);
 
     localStorage.currentProjID = this.props.projectId;
     this.props.setProject(this.props.project);
@@ -144,7 +136,6 @@ var Project = React.createClass({
   },
 
   render: function () {
-    // console.log('Project:', this.props.project)
     var img = (this.props.project.images && this.props.project.images.length)
       ? "/dashboard_data/project/media/" + this.props.project.images[0]
       : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";

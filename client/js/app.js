@@ -29,7 +29,6 @@ var App = exports.App = React.createClass({
   },
 
   setUserType: function(e) {
-    console.log(e.target.value);
     this.setState( {userType: e.target.value });
     this.props.history.pushState(null, `/signup`);
   },
@@ -82,7 +81,6 @@ var App = exports.App = React.createClass({
     var tagIdx = searchCriteria.indexOf(tagName);
     searchCriteria.splice(tagIdx, 1);
     var searchText = "";
-    console.log("/searchCriteria.length:",searchCriteria.length);
     if (searchCriteria.length > 0) {
       searchText = searchCriteria.join(" ");
     }
@@ -94,15 +92,12 @@ var App = exports.App = React.createClass({
     var i = setInterval(function () {
       if (searchCriteria === self.state.searchCriteria) {
         clearInterval(i);
-        console.log("App/rST/self.state.searchCriteria:",self.state.searchCriteria);
-        console.log("App/rST/self.state.searchText:",self.state.searchText);
         self.handleSearchSubmit();
       }
     }, 100);
   },
 
   handleSearchButton: function (searchText) {
-    console.log("App/hSS/searchText:",searchText);
     this.setState({
       searchText: searchText
     });
@@ -110,7 +105,6 @@ var App = exports.App = React.createClass({
     var i = setInterval(function () {
       if (searchText === self.state.searchText) {
         clearInterval(i);
-        console.log("App/hSS/this.state.searchText:",self.state.searchText);
         self.handleSearchSubmit();
       }
     }, 100);
@@ -119,7 +113,6 @@ var App = exports.App = React.createClass({
   handleSearchSubmit: function () {
     if (this.state.searchText) {
       var searchCriteria = this.state.searchText.split(" ");
-      console.log("App/hSS/: searchCriteria",searchCriteria);
       $.ajax({
         url: "/post_search",
         // dataType: 'json',
@@ -133,7 +126,6 @@ var App = exports.App = React.createClass({
           });
           this.props.history.pushState(null, `/search`);
 
-          // console.log('Testing success time. Inside of success to AJAX')
         }.bind(this),
         error: function (xhr, status, err) {
           console.error(xhr, status, err.toString());
@@ -156,7 +148,6 @@ var App = exports.App = React.createClass({
     var i = setInterval(function () {
       if (projectId === self.state.projectId) {
         clearInterval(i);
-        console.log("App/gP/this.state.projectId:",self.state.projectId);
         self.props.history.pushState(null, `/project`);
       }
     }, 100);
@@ -177,7 +168,6 @@ var App = exports.App = React.createClass({
   },
 
   setOrganization: function(org){
-    console.log("App/sO/org:",org);
     this.setState({
       searchText: this.state.searchText,
       searchCriteria: this.state.searchCriteria,

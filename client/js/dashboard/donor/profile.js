@@ -12,26 +12,21 @@ exports.DonorProfile = React.createClass({
   },
 
   componentWillReceiveProps: function(newProps) {
-    console.log('CWRP is fired ', newProps);
     this.setState({ donorInfo: newProps.donorInfo, editing: false });
   },
 
   componentWillMount: function() {
-    console.log('Donor Profile will mount')
   },
 
   componentWillUnmount: function() {
-    console.log('Donor Profile will unmount')
   },
 
   update: function(formData) {
-    console.log("Form Data:", formData);
     $.ajax({
       method: 'POST',
       url: '/dashboard/profile',
       data: formData,
       success: function(response) {
-        console.log("Post Success: ", response.results);
         feeder.emit('profile_update', response.results.username);
         // this.setState({ donorInfo: response.results, editing: false });
         this.props.update_db_state_prop({
@@ -41,7 +36,6 @@ exports.DonorProfile = React.createClass({
         });
       }.bind(this),
       error: function(error){
-        console.log(error);
       }
     });
   },
@@ -67,7 +61,6 @@ exports.DonorProfile = React.createClass({
 
   displayMode: function() {
     var donorInfo = Object.keys(this.state.donorInfo).length ? this.state.donorInfo : this.props.donorInfo;
-    console.log(donorInfo.areas_of_focus.join("; "));
     return (
       <div className="container">
         <div className="float-left">

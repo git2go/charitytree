@@ -31,9 +31,7 @@ exports.Login = React.createClass({
       url: '/login_post',
       data: this.state,
       success: function(response) {
-        // console.log(response);
         localStorage.token = response.token;
-        // feeder.emit('getFeed', response.token)
         this.props.isLoggedIn();
         this.navigateToDashboard();
       }.bind(this),

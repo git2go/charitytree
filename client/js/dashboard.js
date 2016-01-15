@@ -44,7 +44,6 @@ exports.Dashboard = React.createClass({
         // window.location.href = 'http://localhost:4000';
       }.bind(this),
       error: function (xhr, status, err) {
-        console.log("Error posting to: " + xhr, status, err.toString());
       }.bind(this)
     });
   },
@@ -54,7 +53,6 @@ exports.Dashboard = React.createClass({
       method: 'GET',
       url: '/dashboard_data',
       success: function(response) {
-        console.log("Response data: ", response);
         feeder.emit('getFeed', response.results._id);
         this.setState({
           data: response.results,
@@ -75,7 +73,6 @@ exports.Dashboard = React.createClass({
           return;
         }
         else {
-        console.log("Dashboard: ", xhr, status, error);  
         }
       }.bind(this)
     });
@@ -167,16 +164,13 @@ exports.Dashboard = React.createClass({
 
   update_db_state_prop: function(changes) {
     var state = this.state.data;
-    // console.log('State before update: ', state);
     for (var prop in changes) {
       state[prop] = changes[prop];
     }
-    // console.log('State after update: ', state);
     this.setState({ data: state });
   },
 
   updatePageView: function(view) {
-    console.log(view);
     this.setState({ view: view });
   },
 

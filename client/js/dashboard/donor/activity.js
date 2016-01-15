@@ -22,7 +22,6 @@ exports.Activity = React.createClass({
   },
 
   defaultPage: function() {
-    console.log('Following: ', this.props.following);
     return (
       <div className="container">
         <div>
@@ -103,12 +102,10 @@ var Endorsement = exports.Endorsements = React.createClass({
   },
 
   updateTitle: function(e) {
-    // console.log(e.target.value)
     this.setState({ title: e.target.value });
   },
 
   updateReview: function(e) {
-    // console.log(e.target.value)
     this.setState({ review: e.target.value });
   },
 
@@ -122,17 +119,14 @@ var Endorsement = exports.Endorsements = React.createClass({
       author: this.props.donor
     };
 
-    console.log('Endorsement: ', endorsement);
     $.ajax({
       method: 'POST',
       url: '/dashboard/donor/endorsement',
       data: endorsement,
       success: function(response) {
-        console.log('Success')
         feeder.emit('endorsement', endorsement.author, endorsement.org);
       }.bind(this),
       error: function(xhr, status, response) {
-        console.log("Error:", xhr, status)
       }.bind(this)
     });
   },

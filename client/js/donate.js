@@ -45,7 +45,6 @@ exports.Donate = React.createClass({
       url:'/project_get/'+localStorage.currentProjID,
       method: "GET",
       success: function (data) {
-        console.log("on success in projdid with params.id and data.results.needs_list:", data.results.needs_list);
         var needs_list = JSON.parse(JSON.stringify(data.results.needs_list));
         needs_list = needs_list.map(function (need) {
           need.number_purchased = 0;
@@ -55,7 +54,6 @@ exports.Donate = React.createClass({
           project: data.results,
           needs_list: needs_list
         });
-        console.log('inside of success of projdid and needs_list ', needs_list);
         $('input#cc_number, input#csc').characterCounter();
       }.bind(this),
       error: function (xhr, status, err) {
@@ -68,15 +66,12 @@ exports.Donate = React.createClass({
     //this whole function runs once the send button is clicked
 
     e.preventDefault();
-    console.log("You're in the handleSubmit!");
-    // console.log('in handle and state.needslist b4 eachfcn is ', this.state.needs_list);
 
 
     var copy = JSON.stringify(this.state.needs_list.slice());
 
     //creating a copy of the needs list for donor reciept
     var recipeCopy = JSON.parse(copy);
-    console.log('in handle and recipeCopy b4 eachfcn is ', recipeCopy);
 
     //creating updating purchase amount in each need to 0 before sending
     var update = JSON.parse(copy);
@@ -105,7 +100,6 @@ exports.Donate = React.createClass({
       needs_list: project.needs_list
     };
 
-    console.log('in handle and the project ready to be shipped is  ', readyToShip);
 
     // Post to Database for updating. When ready to test place endpoint in URL
     // this whole function runs once the send button is clicked
@@ -115,12 +109,11 @@ exports.Donate = React.createClass({
       dataType: 'json',
       data: readyToShip,
       success: function(data) {
-        console.log('Post request successful');
         feeder.emit('donation', localStorage.token, readyToShip._id, this.state.donationTotal);
         this.props.history.pushState(null, `/thankyou`);
       }.bind(this),
       error: function(err){
-        console.error(err.toString());
+        
       }
     });
   },

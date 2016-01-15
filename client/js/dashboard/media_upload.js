@@ -39,13 +39,11 @@ exports.MediaUpload = React.createClass({
     }
 
     $input.on('change', function(e) {
-      console.log('Target Files: ', e.target.files);
       showFiles(e.target.files);
     });
 
     $form.on('submit', function(e) {
       e.preventDefault();
-      // console.log('Clicked Upload');
       if ($form.hasClass('is-uploading')) {
         $label.html('<span><strong>Uploading...</strong></span>');
         return false;
@@ -62,7 +60,6 @@ exports.MediaUpload = React.createClass({
       var ajaxData = new FormData($form[0]);
 
       if (droppedFiles) {
-        console.log('Dropped Files Exist');
         $form.addClass('is-uploading').removeClass('is-error');
         $.each( droppedFiles, function(i, file) {
           ajaxData.append( $input.attr('name'), file );
@@ -85,7 +82,6 @@ exports.MediaUpload = React.createClass({
           $input.val(""); //remove file from input field
           //update label
           $label.html('<strong>Choose a file</strong><span className="box__dragndrop"> or drag it here</span>')
-          // console.log('Results:', response.results)
           if ('update_db_state_prop' in self.props) {
             self.props.update_db_state_prop(response.results);
           }

@@ -56,7 +56,6 @@ app.use(session({
 //   if (now > req.session.cookie.expires) {
 //     //regenerate the session
 //     req.session.regenerate(function(err) {
-//       console.log('Session was regenerated');
 //     });
 //   }
 //   next();
@@ -65,7 +64,6 @@ app.use(session({
 // var util = require('util');
 // var log_file = fs.createWriteStream(__dirname + '/debug.log', {flags : 'w'});
 // var log_stdout = process.stdout;
-// console.log = function(d) { //
 //   log_file.write(util.format(d) + '\n');
 //   log_stdout.write(util.format(d) + '\n');
 // };
@@ -73,7 +71,6 @@ app.use(session({
 //================================== GET ====================================//
 app.get('/dashboard_data', function(req, res, next) {
   if (req.session && req.session.user) {
-    console.log('In session');
     if (req.session.user.type === 'organization') {
       Model.Organization.findOne({_id: req.session.user.uid})
         .select('-password -profile_img.data')
@@ -263,7 +260,6 @@ app.post('/signup_post', function(req, res, next) {
                   console.error("Signup Error:", err);
                   res.status(500).send({ status: 500, message: "Could not complete signup operation." });
                 }
-                console.log("app.post/org:",org);
                 req.session.user = { uid: org._id, type: 'organization' };
                 org.feed.push({
                   user: 'Charity Collective',
@@ -321,7 +317,6 @@ app.post('/login_post', function(req, res, next) {
           if (result) {
             //create session
             req.session.user = { uid: donor._id, type: 'donor' };
-            console.log('Session has been set');
             res.status(201).send({ status: 201, token: req.session.user.uid });
           } else { //found donor but password doesn't match
             res.status(401).send({ status: 401, message: "Invalid username/password combination" });
@@ -344,7 +339,6 @@ app.post('/login_post', function(req, res, next) {
             if (result) {
               //create session
               req.session.user = { uid: org._id, type: 'organization' };
-              console.log('Session has been set');
               res.send({ status: 201, token: req.session.user.uid });
             } else { //found org but password doesn't match
               res.status(401).send({ status: 401, message: "Invalid username/password combination" });
@@ -363,7 +357,6 @@ app.post('/logout_post', function(req, res, next) {
     if (err) {
       console.error("err",err);
     }
-    // console.log('destroyed session');
     res.status(201).send({status: 201, message: 'User has been logged out'});
   });
 });
@@ -442,10 +435,8 @@ app.post('/dashboard/profile', function(req, res, next) {
 });
 
 app.post('/dashboard/project/create', function(req, res, next) {
-  console.log('in server projcreate and req.body is ', req.body);
   if (req.session && req.session.user) {
       var newProject = req.body.projectData;
-      console.log('New Project: ', newProject)
       newProject._org = req.session.user.uid;
       res.status(201).send('Success')
       // Model.Project.create(newProject, function(err, project) {
@@ -489,7 +480,6 @@ app.post('/dashboard/profile_img/upload', multer().single('profile_img'), functi
       });
       org.save(function(err, currOrg) {
         if (err) { console.error("Profile Image save error: ", err); }
-        console.log(currOrg.feed)
         res.status(201).send({ status: 201, results: {
           contentType: currOrg.profile_img.contentType,
           filename: currOrg.profile_img.filename }
@@ -517,7 +507,6 @@ app.post('/dashboard/org/media/upload', multer().array('media'), function(req, r
 
     streamifier.createReadStream(file.buffer).pipe(writeStream);
     writeStream.on('close', function() {
-      // console.log("File write was successful");
       //store fileId in media property of organization
       Model.Organization.findById({ _id: req.session.user.uid })
        .select('images videos feed')
@@ -564,7 +553,6 @@ app.post('/dashboard/project/media/upload', multer().array('media'), function(re
 
     streamifier.createReadStream(file.buffer).pipe(writeStream);
     writeStream.on('close', function() {
-      console.log("File write was successful");
       //store fileId in images/videos property of project
       Model.Project.findById({ _id: req.body.project }, function(err, project) {
         if (err) { throw err; }
@@ -624,7 +612,6 @@ app.post('/post_search', function(req, res, next) {
 });
 
 app.post('/dashboard/project/update', function(req, res, next) {
-  console.log("Body: ", req.body);
   res.send('Success')
 });
 
@@ -692,6 +679,6 @@ app.get('*', function (req, res, next){
 });
 
 var handleError = function(req, res, err, statusCode, msg) {
-  console.log("Error: ", err);
+  console.error("Error: ", err);
   res.status(statusCode).send({status: statusCode, message: msg});
 }

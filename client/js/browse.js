@@ -21,7 +21,6 @@ const Browse = exports.Browse = React.createClass({
   handleSearchSubmit: function (e) {
     e.preventDefault();
     var searchText = this.props.searchCriteria.join(" ");
-    console.log("Browse:searchText/searchText:",searchText);
     this.props.handleSearchButton(searchText);
   },
 

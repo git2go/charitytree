@@ -12,7 +12,6 @@ exports.DonorFeed = React.createClass({
   },
 
   componentWillMount: function () {
-    // console.log('Feed Component is Mounting')
     this.setState({feedContent: feedData});
   },
 

@@ -9,7 +9,6 @@ exports.TagContainer = React.createClass({
     var tagNodes;
     if (this.props.searchCriteria.length > 0) {
       tagNodes = this.props.searchCriteria.map(function(tag, idx) {
-        //console.log("TagContainer/tagNodes/tag",tag,"idx",idx);
         return (
           <Tag
             text={ tag }
@@ -30,7 +29,6 @@ exports.TagContainer = React.createClass({
 
 var Tag = exports.Tag = React.createClass({
   removeTag: function(e) {
-    console.log("e.target.textContent:",e.target.textContent);
     if (window.location.pathname === "/browse") {
       this.props.removeBrowseTag(e.target.textContent);
     } else if (window.location.pathname === "/search") {

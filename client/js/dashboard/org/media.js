@@ -5,7 +5,6 @@ import {MediaUpload} from '../media_upload.js'
 
 exports.Media = React.createClass({
   componentWillReceiveProps: function(nextProps) {
-    // console.log("CWRP is firing", nextProps);
     var state = this.state.media;
     for (var prop in nextProps.media) {
       state[prop] = nextProps.media[prop]
@@ -35,18 +34,14 @@ exports.Media = React.createClass({
     $.ajax({
       method: 'POST',
       url: $form.attr('action'),
-      // dataType: 'json',
       contentType: false,
       cache: false,
       processData: false,
       data: formData,
       success:function(response) {
-        console.log("Post Success: ", response);
-        // this.setState({ profile_img: response.results });
         this.props.update_db_state_prop({'profile_img': response.results});
       }.bind(this),
       error: function(error){
-        console.log(error);
       }
     });
   },
@@ -65,26 +60,6 @@ exports.Media = React.createClass({
       </form>
     );
   },
-        //{/*<form
-        //  className="center-align col s9"
-        //  onSubmit={this.upload_profile_img}
-        //  action="/dashboard/profile_img/upload"
-        //  encType="multipart/form-data"
-        //  accept="image/*">
-        //  <label htmlFor="profile_img">Choose profile image</label>
-        //  <input className="file-field" id="profile_img" type="file" name="profile_img" />
-        //  <input className="btn blue" type="submit" value="Upload" />
-        //  <div className="file-field input-field file-path-wrapper">
-        //      <div className="btn blue">
-        //        <span>Select Profile Image</span>
-        //        <input className="file-path validate"  type="file" />
-        //      </div>
-        //      <div className="file-path-wrapper">
-        //        <input className="file-path validate" type="text" />
-        //      </div>
-        //    </div>
-        //  <input className="row marginTop center-align btn blue col s3" type="submit" value="Upload" />
-        //</form>*/}
 
   profile_and_banner_img: function() {
     var profile_img = (this.state.media.profile_img['filename'] === undefined && this.props.media.profile_img === undefined)
@@ -102,9 +77,6 @@ exports.Media = React.createClass({
           </div>
           <img className="materialboxed responsive-img center-image" src={profile_img} />
         </div>
-        {/*<div className="col s12">
-          <h5>Banner Image</h5>
-        </div>*/}
       </div>
     )
   },

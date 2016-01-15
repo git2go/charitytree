@@ -58,18 +58,6 @@ module.exports = function(server) {
           Model.Organization.findById(clients[client.id], function(err, org) {
             if (err) throw err;
             if (org) {
-              // for (var i = 0; i < org.followers.length; i++) {
-              //   (function(donorID, idx) {
-              //     Model.Donor.findById(donorID, function(err, donor) {
-              //       feed_sources[idx] = donor.feed.filter(function(item) {
-              //         return item.created_date > time;
-              //       });
-              //       if (feed_sources.length === org.followers.length) {
-              //         client.emit('updateFeed', flatten(feed_sources));
-              //       }
-              //     });
-              //   })(org.followers[i], i)
-              // }
               var orgFeed = org.feed.filter(function(item) {
                 return item.created_date > time && item.user !== org.name;
               });
@@ -125,15 +113,12 @@ module.exports = function(server) {
 
     //this is an organization or donor action
     client.on('disconnect', function() {
-      // console.log('Client has been disconnected');
       delete clients[client.id];
-      // console.log('Client with id: ' + client.id  + ' has logged out');
       client.emit('stopPolling');
     });
 
     //this is a donor action
     client.on('follow', function(donorID, orgID) {
-      // console.log('Follow Data: ', donorID, orgID);
       var now = new Date();
       Model.Organization.findById(orgID, function(err, org) {
         if (err) throw err;
@@ -160,7 +145,6 @@ module.exports = function(server) {
                     donor.save(function(err, updatedDonor) {
                       if (err) throw err;
                       else {
-                        console.log('Saving donor info')
                       }
                     });
                   });

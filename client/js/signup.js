@@ -12,13 +12,11 @@ exports.Signup = React.createClass({
   },
 
   componentWillMount: function() {
-    console.log('CWM fired');
     if (!this.props.userType)
       this.setState({ userType: localStorage.getItem('ct_userType') });
   },
 
   componentDidMount: function() {
-    console.log('CDM fired');
     if (this.props.userType) {
       localStorage.setItem("ct_userType", this.props.userType);
     }
@@ -126,9 +124,7 @@ exports.Signup = React.createClass({
     e.preventDefault();
     // var formData = new FormData(document.querySelector('#signupForm'))
     // $('#signupForm').submit(function(e) {
-    //   console.log("here")
     //   formData = $( this ).serializeArray();
-    //   console.log(formData);
     //   e.preventDefault();
     // })
     if (ReactDOM.findDOMNode(this.refs.pwd).value !== ReactDOM.findDOMNode(this.refs.pwd2).value) {
@@ -159,7 +155,6 @@ exports.Signup = React.createClass({
       url: '/signup_post',
       data: formData,
       success: function(response) {
-        console.log(response);
         localStorage.token = response.token;
         this.props.isLoggedIn();
         this.navigateToDashboard(); //navigate to dashboard page

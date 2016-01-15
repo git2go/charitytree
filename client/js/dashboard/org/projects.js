@@ -29,28 +29,23 @@ exports.Projects = React.createClass({
       method: 'GET',
       url: '/dashboard_data/projects',
       success:function(response) {
-        console.log("GET Success: ", response.results);
         // this.setState({ projects: response.results.projects, action: 'display' });
         this.props.update_db_state_prop({ 'projects': response.results.projects }); //update dashboard state property
       }.bind(this),
       error: function(error){
-        console.log(error);
       }
     });
   },
 
   update: function(formData) {
-    console.log("Form Data:", formData);
     $.ajax({
       method: 'POST',
       url: '/dashboard_data/projects',
       data: formData,
       success: function(response) {
-        console.log("POST Success: ", response.results);
         this.setState({ projects: response.results });
       }.bind(this),
       error: function(error){
-        console.log(error);
       }
     });
   },
@@ -209,7 +204,6 @@ var ProjectView = React.createClass ({
 
   render: function() {
     var project = this.props.project;
-    // console.log(project)
     var needs;
 
     if (project.needs_list.length > 0) {

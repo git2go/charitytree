@@ -38,7 +38,6 @@ exports.ProjectCreate = React.createClass({
   },
 
   updateNeedTitle: function (need) {
-    //console.log("Needs/updateNeedTitle/need:",need);
     var needs = this.state.needs_list;
     needs[need.arrIndex].title = need.title;
 
@@ -69,7 +68,6 @@ exports.ProjectCreate = React.createClass({
   addNeed: function () {
     var arrIndex = this.state.needs_list.length;
     var needs = this.state.needs_list.slice();
-    console.log("addNeed:before/needs:",needs);
     if (needs[needs.length - 1].title !== "" &&
       needs[needs.length - 1].description !== "" &&
       needs[needs.length - 1].cost !== null &&
@@ -87,7 +85,6 @@ exports.ProjectCreate = React.createClass({
     } else {
       Materialize.toast('Oops please fill in all fields', 2000, 'rounded'); // 'rounded' is the class I'm applying to the toast
     }
-    console.log("addNeed:after/needs:",needs);
   },
 
   addRemoveCat: function (e) {
@@ -105,7 +102,6 @@ exports.ProjectCreate = React.createClass({
   },
 
   updateTitle: function (e) {
-    console.log("ProjectCreate/updateTitle/e.target.value:",e.target.value);
     this.setState({ title: e.target.value });
   },
 
@@ -116,35 +112,26 @@ exports.ProjectCreate = React.createClass({
       selectYears: 5, // Creates a dropdown of 15 years to control year
       // closeOnSelect: true,
       onStart: function () {
-        console.log('Hello there :)')
       },
       onRender: function () {
-        console.log('Whoa.. rendered anew')
       },
       onOpen: function () {
-        console.log('Opened up')
       },
       onClose: function () {
-        console.log('Closed now')
       },
       onStop: function () {
-        console.log('See ya.')
       },
       onSet: function (e) {
-        //console.log("onset/e.select:",e.select);
         var endDate = new Date(e.select);
         var endDateText = endDate.toDateString();
-        console.log("endDate", endDate);
 
         self.setState({
           end_date: endDate,
           endDateText: endDateText
         });
-        console.log("onset/this.state.end_date:", self.state.end_date);
         //this.close();
       }
     });
-    //console.log("ProjectCreate/updateEndDate/endDate:",endDate[0]);
   },
 
   updateStartDate: function () {
@@ -166,12 +153,10 @@ exports.ProjectCreate = React.createClass({
   },
 
   updateGoalAmount: function (e) {
-    console.log("ProjectCreate/updateGoalAmound/e.target.value:",e.target.value);
     this.setState({ amount: { goal: e.target.value } })
   },
 
   updateInfo: function (e) {
-    console.log("ProjectCreate/updateInfo/e.target.value:",e.target.value);
     this.setState({ info: e.target.value });
   },
 
@@ -188,7 +173,6 @@ exports.ProjectCreate = React.createClass({
       method: "POST",
       data: { projectData: projectData },
       success: function (response) {
-        console.log(response);
         this.props.submitHandler(); //from projects component
       }.bind(this),
       error: function (xhr, status, err) {
@@ -377,7 +361,6 @@ var Needs = React.createClass({
       );
     }.bind(this));
 
-    //console.log("projectCreate/Needs/render/needs:",needs);
 
     return(
       <ul className="collapsible popout" data-collapsible="accordion">

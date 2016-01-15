@@ -11,16 +11,10 @@ exports.OrgFeed = React.createClass({
     }
   },
 
-  componentDidMount: function () {
-    // console.log('Feed Component is Mounting');
-    // this.setState({feedContent: feedData});
-  },
-
   render: function () {
     var feedContent = (this.state.feedContent.length)
       ? this.state.feedContent
       : this.props.feed;
-    // var feedContent = this.state.feedContent;
     return (
       <div className="container center-align">
         <h3>Feed</h3>

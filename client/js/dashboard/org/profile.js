@@ -2,11 +2,9 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 import { History } from 'react-router';
-// var LocalStorageMixin = require('react-localstorage');
 
 exports.OrgProfile = React.createClass({
   componentWillReceiveProps: function(newProps) {
-    console.log('CWRP is fired ', newProps);
     this.setState({ orgInfo: newProps.orgInfo, editing: false });
   },
 
@@ -18,14 +16,11 @@ exports.OrgProfile = React.createClass({
   },
 
   update: function(formData) {
-    console.log("Form Data:", formData);
     $.ajax({
       method: 'POST',
       url: '/dashboard/profile',
       data: formData,
       success:function(response) {
-        console.log("Post Success: ", response.results);
-        // this.setState({ orgInfo: response.results, editing: false });
         feeder.emit('profile_update', response.results.username);
         this.props.update_db_state_prop({
           'about': response.results.about,
@@ -33,7 +28,6 @@ exports.OrgProfile = React.createClass({
         });
       }.bind(this),
       error: function(error){
-        console.log(error);
       }
     });
   },
@@ -59,7 +53,6 @@ exports.OrgProfile = React.createClass({
 
   displayMode: function() {
     var orgInfo = Object.keys(this.state.orgInfo).length ? this.state.orgInfo : this.props.orgInfo;
-    console.log(orgInfo.areas_of_focus.join("; "));
     return (
       <div className="container">
         <h3 className="center">{orgInfo.name}</h3>
