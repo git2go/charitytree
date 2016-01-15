@@ -104,7 +104,6 @@ exports.MediaUpload = React.createClass({
         $form.removeClass('is-uploading')
           .addClass(data.success == true ? 'is-success' : 'is-error')
           .removeAttr('target');
-        //if (!data.success) $errorMsg.text(data.error);
         $form.removeAttr('target');
         $iframe.remove();
       });

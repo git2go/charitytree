@@ -438,27 +438,7 @@ app.post('/dashboard/project/create', function(req, res, next) {
   if (req.session && req.session.user) {
       var newProject = req.body.projectData;
       newProject._org = req.session.user.uid;
-      res.status(201).send('Success')
-      // Model.Project.create(newProject, function(err, project) {
-      //   if (err) {
-      //     res.status(500).send({ status: 500, message: "Could not complete operation." });
-      //     throw err;
-      //   }
-      //   else {
-      //     Model.Organization.findOne({_id: req.session.user.uid}, function(err, org) {
-      //       if (err) { throw err; }
-      //       else {
-      //         org.projects.push(project); //save project to organization's array of projects
-      //         org.save(function(err, org) {
-      //           if (err) { throw err; }
-      //           else {
-      //             res.status(201).send({ status: 201, message: "You are logged in" });
-      //           }
-      //         });
-      //       }
-      //     });
-      //   }
-      // });
+      res.status(201).send('Success');
   } else {
     res.status(401).send({ status: 401, message: "Unauthorized to access dashboard" });
   }
@@ -674,7 +654,6 @@ app.post('/dashboard/donor/endorsement', function(req, res, next) {
 // handle every other route with index.html, which will contain
 // a script tag to your application's JavaScript file(s).
 app.get('*', function (req, res, next){
-  // res.sendFile(path.resolve(__dirname, './../client', 'index.html'));
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });
 

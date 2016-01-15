@@ -122,11 +122,6 @@ exports.Signup = React.createClass({
 
   signup: function(e) {
     e.preventDefault();
-    // var formData = new FormData(document.querySelector('#signupForm'))
-    // $('#signupForm').submit(function(e) {
-    //   formData = $( this ).serializeArray();
-    //   e.preventDefault();
-    // })
     if (ReactDOM.findDOMNode(this.refs.pwd).value !== ReactDOM.findDOMNode(this.refs.pwd2).value) {
       this.setState({ errorMsg: 'Passwords did not match' });
       return;
@@ -169,10 +164,6 @@ exports.Signup = React.createClass({
         }
       }.bind(this)
     });
-
-    // var frm = document.getElementById('signupForm');
-    // frm.reset();
-    // return false;
   },
 
   render: function() {

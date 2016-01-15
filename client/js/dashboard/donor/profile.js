@@ -15,12 +15,6 @@ exports.DonorProfile = React.createClass({
     this.setState({ donorInfo: newProps.donorInfo, editing: false });
   },
 
-  componentWillMount: function() {
-  },
-
-  componentWillUnmount: function() {
-  },
-
   update: function(formData) {
     $.ajax({
       method: 'POST',
