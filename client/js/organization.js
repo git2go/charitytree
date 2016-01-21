@@ -24,7 +24,7 @@ var Organization = exports.Organization = React.createClass({
 
   componentDidMount: function() {
     $.ajax({
-        url:'/organization_get/' + localStorage.currentOrganization,
+        url:'/organization/' + localStorage.currentOrganization,
         method: "GET",
         success: function (data) {
           this.setState({
@@ -74,11 +74,11 @@ var Organization = exports.Organization = React.createClass({
     if(this.state.org){
       var today = new Date();
       var profileImg = (this.state.org.profile_img.filename)
-      ? "http://localhost:4000/organization/profile_img/" + this.state.org._id
+      ? "/organization/profile_img/" + this.state.org._id
       : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
 
       var secondImg = (this.state.org.images.length)
-      ? "http://localhost:4000/dashboard_data/org/media/" + this.state.org.images[0]
+      ? "/dashboard_data/org/media/" + this.state.org.images[0]
       : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
 
       var aofs = this.state.org.areas_of_focus.map(function (aof, index) {
@@ -92,7 +92,7 @@ var Organization = exports.Organization = React.createClass({
       var currentProjects = this.state.org.projects.filter(function (project) {
         return moment(project.end_date).diff(today) > 0;
       }).map(function (project, index) {
-          var projectImg = (project.images.length)
+          var projectImg = (project.images && project.images.length)
             ? "/dashboard_data/project/media/" + project.images[0]
             : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
 
@@ -115,8 +115,8 @@ var Organization = exports.Organization = React.createClass({
       var pastProjects = this.state.org.projects.filter(function (project) {
         return moment(project.end_date).diff(today) < 0;
       }).map(function (project, index) {
-        var projectImg = (project.images.length)
-          ? "dashboard_data/project/media/" + project.images[0]
+        var projectImg = (project.images && project.images.length)
+          ? "/dashboard_data/project/media/" + project.images[0]
           : "http://worldofgoodethiopia.org/yahoo_site_admin/assets/images/30050052.182123348_std.jpg";
         return (
           <a className="collection-item avatar black-text" key={index} onClick={this.handleClick} style={{cursor: "pointer"}}>

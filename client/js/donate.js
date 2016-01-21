@@ -42,7 +42,7 @@ exports.Donate = React.createClass({
 
   componentDidMount: function () {
         $.ajax({
-      url:'/project_get/'+localStorage.currentProjID,
+      url:'/project/'+localStorage.currentProjID,
       method: "GET",
       success: function (data) {
         var needs_list = JSON.parse(JSON.stringify(data.results.needs_list));
@@ -113,7 +113,7 @@ exports.Donate = React.createClass({
         this.props.history.pushState(null, `/thankyou`);
       }.bind(this),
       error: function(err){
-        
+
       }
     });
   },

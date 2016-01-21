@@ -114,7 +114,7 @@ var App = exports.App = React.createClass({
     if (this.state.searchText) {
       var searchCriteria = this.state.searchText.split(" ");
       $.ajax({
-        url: "/post_search",
+        url: "/search",
         // dataType: 'json',
         method: "POST",
         data: {aofs: searchCriteria},
