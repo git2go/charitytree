@@ -1,0 +1,263 @@
+Country
+Afghanistan
+Albania
+Algeria
+Andorra
+Angola
+Antigua and Barbuda
+Argentina
+Armenia
+Australia
+Austria
+Azerbaijan
+Bahamas
+Bahrain
+Bangladesh
+Barbados
+Belarus
+Belgium
+Belize
+Benin
+Bhutan
+Bolivia
+Bosnia and Herzegovina
+Botswana
+Brazil
+Brunei Darussalam
+Bulgaria
+Burkina Faso
+Burundi
+Cabo Verde
+Cambodia
+Cameroon
+Canada
+Central African Republic
+Chad
+Chile
+China
+Colombia
+Comoros
+Congo
+Costa Rica
+Côte d'Ivoire
+Croatia
+Cuba
+Cyprus
+Czech Republic
+Democratic People's Republic of Korea (North Korea)
+Democratic Republic of the Cong
+Denmark
+Djibouti
+Dominica
+Dominican Republic
+Ecuador
+Egypt
+El Salvador
+Equatorial Guinea
+Eritrea
+Estonia
+Ethiopia
+Fiji
+Finland
+France
+Gabon
+Gambia
+Georgia
+Germany
+Ghana
+Greece
+Grenada
+Guatemala
+Guinea
+Guinea-Bissau
+Guyana
+Haiti
+Honduras
+Hungary
+Iceland
+India
+Indonesia
+Iran
+Iraq
+Ireland
+Israel
+Italy
+Jamaica
+Japan
+Jordan
+Kazakhstan
+Kenya
+Kiribati
+Kuwait
+Kyrgyzstan
+Lao People's Democratic Republic (Laos)
+Latvia
+Lebanon
+Lesotho
+Liberia
+Libya
+Liechtenstein
+Lithuania
+Luxembourg
+Macedonia
+Madagascar
+Malawi
+Malaysia
+Maldives
+Mali
+Malta
+Marshall Islands
+Mauritania
+Mauritius
+Mexico
+Micronesia (Federated States of)
+Monaco
+Mongolia
+Montenegro
+Morocco
+Mozambique
+Myanmar
+Namibia
+Nauru
+Nepal
+Netherlands
+New Zealand
+Nicaragua
+Niger
+Nigeria
+Norway
+Oman
+Pakistan
+Palau
+Panama
+Papua New Guinea
+Paraguay
+Peru
+Philippines
+Poland
+Portugal
+Qatar
+Republic of Korea (South Korea)
+Republic of Moldova
+Romania
+Russian Federation
+Rwanda
+Saint Kitts and Nevis
+Saint Lucia
+Saint Vincent and the Grenadines
+Samoa
+San Marino
+Sao Tome and Principe
+Saudi Arabia
+Senegal
+Serbia
+Seychelles
+Sierra Leone
+Singapore
+Slovakia
+Slovenia
+Solomon Islands
+Somalia
+South Africa
+South Sudan
+Spain
+Sri Lanka
+Sudan
+Suriname
+Swaziland
+Sweden
+Switzerland
+Syrian Arab Republic
+Tajikistan
+Thailand
+Timor-Leste
+Togo
+Tonga
+Trinidad and Tobago
+Tunisia
+Turkey
+Turkmenistan
+Tuvalu
+Uganda
+Ukraine
+United Arab Emirates
+United Kingdom of Great Britain and Northern Ireland
+United Republic of Tanzania
+United States of America
+Uruguay
+Uzbekistan
+Vanuatu
+Venezuela
+Vietnam
+Yemen
+Zambia
+Zimbabwe
+
+Animal Rights
+Welfare
+Wildlife Conservation
+Zoos
+Aquariums
+Libraries
+Historical Societies
+Landmark Preservation
+Museums
+Performing Arts
+Public Broadcasting
+Media
+Fundraising
+Community Foundations
+Housing
+Neighborhood Development
+Universities
+Graduate Schools
+Technological Institutes
+Private Elementary
+Secondary Schools
+Private Liberal Arts Colleges
+Education Programs
+Environmental Protection
+Conservation
+Botanical Gardens
+Parks
+Nature Centers
+Diseases
+Disorders
+Patient Support
+Health Care Facilities
+Health Care Programs
+Mental Health
+Crisis Services
+Treatment
+Prevention Services
+Medical Research
+Children Services
+Family Services
+Crime
+Legal
+Youth Development
+Shelter
+Crisis Services
+Food Banks
+Food Pantries
+Food Distribution
+Multipurpose Human Service Organizations
+Public Safety
+Disaster Preparedness
+Relief
+Homeless Services
+Social Services
+Advocacy
+Education
+Development
+Relief Services
+International Peace
+Security
+Humanitarian Relief Supplies
+Foreign Charity Support Organizations
+Religious Activities
+Religious Media
+Broadcasting
+Non-Medical Science
+Technology Research
+Social and Public Policy Research

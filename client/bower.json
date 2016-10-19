@@ -1,0 +1,32 @@
+{
+  "name": "Charity Tree",
+  "homepage": "https://github.com/charitycollective/charitytree",
+  "authors": [
+    "Zach Herries <hotziggity@gmail.com>"
+  ],
+  "description": "Know what the money you donate is used for",
+  "main": "index.html",
+  "moduleType": [
+    "es6",
+    "node"
+  ],
+  "keywords": [
+    "charity",
+    "giving",
+    "donations",
+    "503c"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Materialize": "materialize#~0.97.3",
+    "pickadate": "~3.5.6"
+  }
+}
