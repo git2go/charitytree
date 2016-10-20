@@ -12,9 +12,6 @@ $ npm start
 ```
 
 Tech Stack
-
-We use Babel to transpile ES6 and JSX code. For development purposes, we recommend using an in-browser transpiler offered by a CDN. But for production, we recommend precompiling your code prior to deploying.
-
 ####Front-End:
 ReactJS
 React-Router
@@ -26,16 +23,12 @@ Node.js
 Express
 Socket.io
 MongoDB
-Mongoose (ODM)
+Mongoose(ODM)
+Redis
 
 ####Utilities:
-Webpack -- javascript file bundling (please read this Webpack tutorial by one of React's lead engineers, Pete Hunt, espousing the benefits of Webpack within the React workflow. https://github.com/petehunt/webpack-howto)
+Webpack
 Grunt / Gulp / Shell Files for ease-of-build
 
-####Further Notes:
-Please .gitignore your node_modules and bower_components. We do not want to clutter our repo. This will bottleneck the download/upload processes.
 
 More to come later...
-
-
-
