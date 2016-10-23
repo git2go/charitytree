@@ -22,34 +22,41 @@ function buildErrorResponse(err, statusCode) {
     return errorObj
 }
 
-function badRequest(err) {
-    const res = this
-    res.status(400)
-
-    return res.send(buildErrorResponse(err, 400));
-}
-
-function notFound(err) {
-    const res = this
-    res.status(404)
-
-    return res.send(buildErrorResponse(err, 404));
-}
-
-function serverError(err) {
-    const res = this
-    res.status(500)
-
-    return res.send(buildErrorResponse(err, 500));
-}
-
-function unauthorized(err) {
-    const res = this
-    res.status(401)
-
-    return res.send(buildErrorResponse(err, 401));
-}
 
 module.exports = function(express) {
-    _.assign(express.response.prototype, { notFound, badRequest, serverError })
+    function badRequest(err) {
+        const res = this
+        res.status(400)
+
+        return res.send(buildErrorResponse(err, 400));
+    }
+
+    function notFound(err) {
+        const res = express.response
+        res.status(404)
+
+        return res.send(buildErrorResponse(err, 404));
+    }
+
+    function serverError(err) {
+        const res = this
+        console.log('res:', res)
+        res.status(500)
+
+        return res.send(buildErrorResponse(err, 500));
+    }
+
+    function unauthorized(err) {
+        const res = this
+        res.status(401)
+
+        return res.send(buildErrorResponse(err, 401));
+    }
+
+
+    express.response.serverError = serverError
+    console.log('express:', express.response.json)
+    _.assign(express.response, {
+        notFound: notFound, badRequest, serverError: serverError, unauthorized
+    })
 }

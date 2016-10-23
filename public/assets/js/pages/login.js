@@ -9,13 +9,13 @@ export default class Login extends Component {
         super(props)
 
         this.state = { username: '', pwd: '', errorMsg: '' }
+
+        this.usernameChange = this.usernameChange.bind(this)
+        this.pwdChange = this.pwdChange.bind(this)
+        this.login = this.login.bind(this)
     }
 
-    navigateToDashboard() {
-        browserHistory.push('/dashboard');
-    }
-
-    usernameChange() {
+    usernameChange(e) {
         this.setState({ username: e.target.value });
     }
 
@@ -28,15 +28,18 @@ export default class Login extends Component {
         e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: '/login_post',
+            url: '/auth/login',
             data: self.state,
             success: function(response) {
                 localStorage.token = response.token;
                 self.props.isLoggedIn();
-                self.navigateToDashboard();
+                browserHistory.push('/dashboard');
             },
             error: function(xhr, status, response) {
                 if (xhr.status === 401) {
+                    self.setState({ errorMsg: "Invalid username/password combination" });
+                }
+                if (xhr.status === 404) {
                     self.setState({ errorMsg: "Invalid username/password combination" });
                 }
                 if (xhr.status === 500) {

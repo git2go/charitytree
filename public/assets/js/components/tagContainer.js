@@ -1,10 +1,9 @@
 "use strict";
 
 import React, { Component } from 'react';
-// import { History } from 'react-router';
-import LocalStorageMixin from 'react-localstorage';
+// import LocalStorageMixin from 'react-localstorage';
 
-class Tag extends Component {
+export class Tag extends Component {
     constructor(props) {
         super(props)
 
@@ -29,7 +28,7 @@ class Tag extends Component {
     }
 }
 
-const TagContainer = function(props) {
+export function TagContainer(props) {
     let tagNodes;
     if (props.searchCriteria.length > 0) {
         tagNodes = props.searchCriteria.map((tag, idx) => {
@@ -49,5 +48,3 @@ const TagContainer = function(props) {
         </div>
     );
 }
-
-module.exports = { Tag, TagContainer }

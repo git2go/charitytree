@@ -37,18 +37,8 @@ const routes = (
         <Route path="signup" component={Signup} />
         <Route path="browse" component={Browse} />
         <Route path="search" component={Search} />
-          {/* <Route path="browse/detail/:uid" component={BrowseListingDetail} /> */}
 
-        <Route path="dashboard" component={Dashboard}>
-          {/*<Route path="profile" component={Profile} />*/}
-          {/*<Route path="listings" component={}>
-            <Route path="create" component={} />
-            <Route path=":id" component={}>
-              <Route path="edit" component={} />
-            </Route>
-          </Route>*/}
-          {/*<Route path="applications" component={Applications} />*/}
-        </Route>
+        <Route onEnter={redirectToDashboard} path="dashboard" component={Dashboard}></Route>
     </Route>
 );
 
