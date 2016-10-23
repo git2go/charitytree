@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, History } from 'react-router';
+import { Link } from 'react-router';
 
 exports.Needs = React.createClass({
   navigateToDonate: function () {

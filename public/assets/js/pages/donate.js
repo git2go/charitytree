@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, History } from 'react-router';
-import { DonateNeeds } from './needs.js';
+import { Link } from 'react-router';
+import { DonateNeeds } from '../components/needs.js';
 exports.Donate = React.createClass({
 
   getInitialState: function () {

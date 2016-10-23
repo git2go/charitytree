@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server/server.js",
     "build": "./node_modules/.bin/webpack -w",
+    "build-dev": "./node_modules/.bin/nf -j Procfile-dev start",
     "babel-node": "babel-node --stage 0 --ignore='foo|bar|baz'"
   },
   "repository": {
@@ -49,12 +50,15 @@
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-react": "^6.1.18",
+    "colors": "^1.1.2",
     "connect-busboy": "0.0.2",
     "connect-redis": "^3.0.1",
     "css-loader": "^0.23.0",
+    "foreman": "^2.0.0",
     "history": "^1.13.1",
     "morgan": "^1.6.1",
     "path": "^0.12.7",
+    "react-hot-loader": "^3.0.0-beta.6",
     "session-file-store": "0.0.23",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.9",

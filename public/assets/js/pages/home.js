@@ -1,29 +1,29 @@
-import React from 'react';
-import { Link, History } from 'react-router';
+import React, { Component } from 'react';
+import { Link } from 'react-router';
 
-import {Footer} from './footer.js';
+import Footer from '../components/footer';
 
-exports.Home = React.createClass({
-  updateInput: function (e) {
+export default class Home extends Component {
+  updateInput(e) {
     this.props.updateInput(e.target.value);
-  },
+  }
 
-  clearInput: function () {
+  clearInput() {
     this.props.updateInput("");
-  },
+  }
 
-  handleSearchSubmit: function (e) {
+  handleSearchSubmit(e) {
     e.preventDefault();
     this.props.handleSearchSubmit();
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount() {
     $('.parallax').parallax();
     $(".button-collapse").sideNav();
     localStorage.clear();
-  },
+  }
 
-  render: function () {
+  render() {
     return (
       <div>
 
@@ -172,4 +172,4 @@ exports.Home = React.createClass({
       </div>
     );
   }
-});
+}

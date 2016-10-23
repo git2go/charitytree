@@ -1,5 +1,5 @@
 import React from 'react';
-import { CausesInfo } from '../../causesinfo.js';
+import { CausesInfo } from '../../../causesinfo.js';
 
 exports.ProjectCreate = React.createClass({
   getInitialState: function () {

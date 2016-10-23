@@ -1,23 +1,21 @@
 "use strict";
-var React = require('react');
-//var Dropzone = require('react-dropzone');
-var LocalStorageMixin = require('react-localstorage');
-import { Router, Route, Link, IndexRoute, History } from 'react-router';
 
-var Upload = exports.Upload = React.createClass({
-  displayName: 'Upload',
-  mixins: [ History, LocalStorageMixin ],
-  getInitialState: function () {
-    return {
-      files: []
-    };
-  },
+import React, { Component } from 'react';
+//var Dropzone = require('react-dropzone');
+// var LocalStorageMixin = require('react-localstorage');
+
+export default class Upload extends Component {
+    constructor(props) {
+      super(props)
+
+        this.state = { files: [] }
+    }
 
   //onOpenClick: function () {
   //  this.refs.dropzone.open();
   //},
 
-  render: function () {
+  render() {
     return (
       <div className="form-media-upload">
         <form className="box" method="post" action="/media_upload" encType="multipart/form-data">
@@ -31,6 +29,6 @@ var Upload = exports.Upload = React.createClass({
           <div className="box__error">Error!</div>
         </form>
       </div>
-    );
+    )
   }
-});
+}

@@ -1,12 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router } from 'react-router';
-import { createHistory, useBasename } from 'history';
+import { Router, browserHistory } from 'react-router';
+import {routes}  from './routes';
 
-import { routes } from './routes';
-
-const history = useBasename(createHistory)({
-  basename: '/'
-});
-
-render(<Router history={history} routes={routes}/>, document.getElementById('app'));
+render(
+    <Router history={browserHistory} routes={routes} />,
+    document.getElementById('app')
+);

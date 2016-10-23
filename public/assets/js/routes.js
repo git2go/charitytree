@@ -1,138 +1,55 @@
+import React from 'react';
+import { Route, IndexRoute } from 'react-router';
+
 //============Unauthenticated Routes===============/
-import {App} from '../js/app.js';
-import {Home} from '../js/home.js';
-import {Browse} from '../js/browse.js';
-import {Search} from '../js/search.js';
-import {Project} from '../js/project.js';
-import {Organization} from '../js/organization.js';
-import {Login} from '../js/login.js';
-import {Signup} from '../js/signup.js';
-import {Donate} from '../js/donate.js';
-import {Thankyou} from '../js/thankyou.js';
+import App from './components/app.js';
+import Home from './pages/home.js';
+import Browse from './pages/browse.js';
+import Search from './pages/search.js';
+import Project from './pages/project.js';
+import Organization from './pages/organization.js';
+import Login from './pages/login.js';
+import Signup from './pages/signup.js';
+import Donate from './pages/donate.js';
+import ThankYou  from './pages/thankyou.js';
 
 //============Authenticated Routes===============/
-import {Dashboard} from '../js/dashboard.js';
+import { Dashboard } from './pages/dashboard.js';
 
-var loggedIn = exports.loggedIn = function () {
-
-  return !!localStorage.token;
-};
 
 function redirectToDashboard(nextState, replaceState) {
-  if (loggedIn()) {
-    replaceState(null, '/dashboard');
-  }
+    if (!loggedIn()) {
+        replaceState({
+            pathname: '/login',
+            state: { nextPathname: nextState.location.pathname }
+        })
+    }
 }
 
-exports.routes = {
-  component: App,
-  childRoutes: [
-    { path: '/',
-      getComponent: (location, cb) => {
-        return require.ensure([], () => {
-          cb(null, Home);
-        });
-      }
-    },
-
-    { path: '/dashboard',
-      getComponent: (location, cb) => {
-        // Share the path
-        // Dynamically load the correct component
-        if (loggedIn()) {
-          return require.ensure([], () => {
-            cb(null, Dashboard);
-          })
-        }
-        return require.ensure([], () => {
-          cb(null, Login);
-        })
-      }
-    },
-    { onEnter: redirectToDashboard,
-      childRoutes: [
-        // Unauthenticated routes
-        // Redirect to dashboard if user is already logged in
-        { path: '/login',
-          getComponent: (location, cb) => {
-            require.ensure([], () => {
-              cb(null, Login);
-            })
-          }
-        }
-      ]
-    },
-    
-    {
-      path: '/donate',
-      getComponent: (location, cb) => {
-        // Share the path
-        // Dynamically load the correct component
-        if (loggedIn()) {
-          return require.ensure([], () => {
-            cb(null, Donate);
-          })
-        }
-        return require.ensure([], () => {
-          cb(null, Login);
-        })
-      }
-    },
-    { path: '/browse',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Browse);
-        });
-      }
-    },
-    { path: '/search',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Search);
-        });
-      }
-    },
-    { path: '/thankyou',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Thankyou);
-        });
-      }
-    },
-    { path: '/project',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Project);
-        });
-      }
-    },
-    { path: '/donate',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Donate);
-        });
-      }
-    },
-    { path: '/login',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Login);
-        });
-      }
-    },
-    { path: '/signup',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Signup);
-        });
-      }
-    },
-    { path: '/organization',
-      getComponent: (location, cb) => {
-        require.ensure([], () => {
-          cb(null, Organization);
-        });
-      }
-    }
-  ]
+const loggedIn = function() {
+    return !!localStorage.token;
 };
+
+const routes = (
+    <Route path="/" component={App}>
+        <IndexRoute component={Home} />
+        <Route path="login" component={Login} />
+        <Route path="signup" component={Signup} />
+        <Route path="browse" component={Browse} />
+        <Route path="search" component={Search} />
+          {/* <Route path="browse/detail/:uid" component={BrowseListingDetail} /> */}
+
+        <Route path="dashboard" component={Dashboard}>
+          {/*<Route path="profile" component={Profile} />*/}
+          {/*<Route path="listings" component={}>
+            <Route path="create" component={} />
+            <Route path=":id" component={}>
+              <Route path="edit" component={} />
+            </Route>
+          </Route>*/}
+          {/*<Route path="applications" component={Applications} />*/}
+        </Route>
+    </Route>
+);
+
+module.exports = { routes, loggedIn }

@@ -1,57 +1,58 @@
 "use strict";
-import React from 'react';
-import { History } from 'react-router';
+import React, { Component } from 'react';
+import { browserHistory } from 'react-router';
 import moment from 'moment';
 import LocalStorageMixin from 'react-localstorage';
 
 moment().format();
 
-var Organization = exports.Organization = React.createClass({
-  displayName: 'Organization',
-  mixins: [ History, LocalStorageMixin ],
+export default class Organization extends Component {
+  // mixins: [ LocalStorageMixin ],
+  constructor(props) {
+      super(props)
 
-  handleClick: function(project){
+      this.state = {
+          org: null,
+          following: false,
+          followError: ''
+      }
+
+  }
+
+  componentDidMount() {
+      $.ajax({
+          url:'/organization/' + localStorage.currentOrganization,
+          method: "GET",
+          success: function (data) {
+              this.setState({
+                  org: data.results,
+                  followError: ''
+              });
+
+              //Initialize Materialize Components
+              $('.materialboxed').materialbox();
+              $('.tooltipped').tooltip({delay: 50});
+              $('.scrollspy').scrollSpy();
+
+          }.bind(this),
+          error: function (xhr, status, err) {
+              if (xhr.status === 400) {
+                  this.props.browserHistory.pushState(null, `/search`);
+              }
+              if (xhr.status === 500) {
+                  this.setState({ errorMsg: "Error. Please try again later." });
+              }
+              console.error(xhr, status, err.toString());
+          }.bind(this)
+      });
+  }
+
+  handleClick() {
     localStorage.setItem('currProjObj', project._id);
     this.props.navigateToProjectPage();
-  },
+  }
 
-  getInitialState: function(){
-    return {
-      org: null,
-      following: false,
-      followError: ''
-    };
-  },
-
-  componentDidMount: function() {
-    $.ajax({
-        url:'/organization/' + localStorage.currentOrganization,
-        method: "GET",
-        success: function (data) {
-          this.setState({
-            org: data.results,
-            followError: ''
-          });
-
-          //Initialize Materialize Components
-          $('.materialboxed').materialbox();
-          $('.tooltipped').tooltip({delay: 50});
-          $('.scrollspy').scrollSpy();
-
-        }.bind(this),
-        error: function (xhr, status, err) {
-          if (xhr.status === 400) {
-            this.props.history.pushState(null, `/search`);
-          }
-          if (xhr.status === 500) {
-            this.setState({ errorMsg: "Error. Please try again later." });
-          }
-          console.error(xhr, status, err.toString());
-        }.bind(this)
-      });
-  },
-
-  followOrg: function(e) {
+  followOrg(e) {
     e.preventDefault();
     var org = this.state.org._id || this.props.currentOrganization._id;
     $.ajax({
@@ -69,10 +70,10 @@ var Organization = exports.Organization = React.createClass({
         }
       }.bind(this)
     });
-  },
+  }
 
-  render: function () {
-    if(this.state.org){
+  render() {
+    if (this.state.org) {
       var today = new Date();
       var profileImg = (this.state.org.profile_img.filename)
       ? "/organization/profile_img/" + this.state.org._id
@@ -260,62 +261,21 @@ var Organization = exports.Organization = React.createClass({
       );
     }
   }
-});
+}
 
-var ScrollSpyListItems = React.createClass({
-  render: function () {
-    return(
-      <div className="toc-wrapper pinned" >
+function ScrollSpyListItems(props) {
+    return (
+      <div className="toc-wrapper pinned">
         <div>
           <ul className="section table-of-contents">
-            {this.props.address ?
-              <li>
-                <a href="#location">
-                  Location
-                </a>
-              </li> : ""
-            }
-
-            <li>
-              <a href="#description">
-                Description
-              </a>
-            </li>
-            <li>
-              <a href="#aofs">
-                Areas of Focus
-              </a>
-            </li>
-            {
-              this.props.hasCurrentProjects ? (
-                <li>
-                  <a href="#current-projects">
-                    Current Projects
-                  </a>
-                </li>
-              ) : (
-               ""
-              )
-            }
-            {
-              this.props.hasPastProjects ? (
-                <li>
-                  <a href="#past-projects">
-                    Past Projects
-                  </a>
-                </li>
-              ) : (
-                ""
-              )
-            }
-            <li>
-              <a href="#endorsements">
-                Endorsements
-              </a>
-            </li>
+            {props.address ? <li><a href="#location">Location</a></li> : ""}
+            <li><a href="#description">Description</a></li>
+            <li><a href="#aofs">Areas of Focus</a></li>
+            {props.hasCurrentProjects ? <li><a href="#current-projects">Current Projects</a></li> : "" }
+            {props.hasPastProjects ? <li><a href="#past-projects">Past Projects</a></li> : ""}
+            <li><a href="#endorsements">Endorsements</a></li>
           </ul>
         </div>
       </div>
-    );
-  }
-});
+    )
+}
