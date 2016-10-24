@@ -15,10 +15,10 @@ module.exports = {
         return Donor.findOneAndUpdate({ _id: req.session.user.uid }, { name, email, areas_of_focus }, options)
         .then(donor => {
             if (!donor) {
-                return res.notFound(new errors.NotFoundError("user"))
+                return res.notFound(new errors.NotFoundError("user"));
             }
 
-            return res.status(201).send({ status: 201, results: donor });
+            return res.ok(201, { data: donor });
         })
         .catch(res.serverError)
     },
@@ -43,7 +43,7 @@ module.exports = {
             return [ org.save(), donor.save() ]
         })
         .then(() => {
-            return res.status(201).send({ status: 201, message: 'Success' });
+            return res.ok(201, { message: 'Success' });
         })
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)
@@ -62,7 +62,7 @@ module.exports = {
             return Endorsement.findOne({ org: req.params.orgId, author: req.session.user.uid })
         })
         .then(found => {
-            if (found) throw new errors.AlreadyInUseError("endorsement");
+            if (found) throw new errors.AlreadyInUseError("Endorsement already exists");
 
             const values = {
                 org: req.params.orgId,
@@ -81,11 +81,9 @@ module.exports = {
         })
         .then(_.first)
         .then(endorsement => {
-            return res.status(201).send({ status: 201, results: endorsement });
+            return res.ok(201, { data: endorsement });
         })
-        .catch(errors.AlreadyInUseError, err => {
-            return res.status(400).send({ status: 400, message: 'Endorsement already exists' });
-        })
+        .catch(errors.AlreadyInUseError, res.badRequest)
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)
     },
@@ -105,7 +103,7 @@ module.exports = {
             //   }).sort(function(item1, item2) {
             //     return new Date(item2.created_date) - new Date(item1.created_date);
             //   });
-            return res.status(200).json({ status: 200, data: donor });
+            return res.ok({ data: donor });
         });
     }
 }

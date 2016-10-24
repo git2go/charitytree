@@ -1,7 +1,5 @@
 "use strict";
 
-const _ = require('lodash')
-
 function buildErrorResponse(err, statusCode) {
     const errorObj = { status: statusCode }
 
@@ -22,41 +20,37 @@ function buildErrorResponse(err, statusCode) {
     return errorObj
 }
 
-
-module.exports = function(express) {
+module.exports = function(req, res, next) {
     function badRequest(err) {
-        const res = this
         res.status(400)
-
         return res.send(buildErrorResponse(err, 400));
     }
 
     function notFound(err) {
-        const res = express.response
         res.status(404)
-
         return res.send(buildErrorResponse(err, 404));
     }
 
     function serverError(err) {
-        const res = this
-        console.log('res:', res)
         res.status(500)
-
-        return res.send(buildErrorResponse(err, 500));
+        return this.send(buildErrorResponse(err, 500));
     }
 
     function unauthorized(err) {
-        const res = this
         res.status(401)
-
         return res.send(buildErrorResponse(err, 401));
     }
 
+    function ok(statusCode, body) {
+        if (typeof statusCode !== 'number') {
+            body = statusCode
+            statusCode = 200
+        }
+        
+        res.status(statusCode)
+        return res.send(body)
+    }
 
-    express.response.serverError = serverError
-    console.log('express:', express.response.json)
-    _.assign(express.response, {
-        notFound: notFound, badRequest, serverError: serverError, unauthorized
-    })
+    Object.assign(res, { badRequest, notFound, serverError, unauthorized, ok })
+    next()
 }

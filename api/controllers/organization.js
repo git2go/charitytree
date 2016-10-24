@@ -11,7 +11,7 @@ const conn = require('../config/connections')
 module.exports = {
     getInfo: function(req, res) {
         if (!req.params.id) {
-            return res.status(400).json({ status: 400, message: ""})
+            return res.badRequest(new errors.ArgumentNullError("id"));
         }
 
         return Organization.findOne({ _id: req.params.id })
@@ -20,10 +20,10 @@ module.exports = {
         .lean()
         .then(org => {
             if (!org) {
-                return res.status(404).json({ status: 404, message: "Organization not found" });
+                return res.notFound(new errors.NotFoundError("organization"));
             }
 
-            return res.status(200).json({ status: 200, results: org });
+            return res.ok({ data: org });
         })
         .catch(res.serverError)
     },
@@ -32,7 +32,7 @@ module.exports = {
         return Organization.findById(req.session.user.uid)
         .then(org => {
             if (!org) {
-              return res.status(404).send({status: 404, message: "Organization not found"});
+              return res.notFound(new errors.NotFoundError("organization"));
             }
 
             return streamifier.createReadStream(org.profile_img.data).pipe(res);
@@ -47,10 +47,10 @@ module.exports = {
         return Organization.findOneAndUpdate({ _id: req.session.user.uid }, { about, areas_of_focus }, options)
         .then(org => {
             if (!org) {
-                return res.status(404).json({ status: 404, message: "User profile not found"})
+                return res.notFound(new errors.NotFoundError("profile"));
             }
 
-            return res.status(200).json({ status: 200, results: org });
+            return res.ok({ data: org });
         })
         .catch(res.serverError)
     },
@@ -75,7 +75,7 @@ module.exports = {
             //   attachment_type: 'image',
             //   created_date: Date.now()
             // });
-            return res.status(200).json({ status: 200, results: { contentType, filename } });
+            return res.ok({ data: { contentType, filename } });
         })
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)
@@ -92,7 +92,7 @@ module.exports = {
         .then(files => {
             return [ files, Organization.findById(req.session.user.uid).select('images videos feed') ]
         })
-        .spread(files, org => {
+        .spread((files, org) => {
             _.each(files, file => {
                 const mimeType = _.slice(file.content_type, 0, 5)
                 //store fileId in appropriate organization media property
@@ -113,7 +113,7 @@ module.exports = {
             return org.save()
         })
         .then(({ images, videos }) => {
-            return res.status(201).send({ status: 201, results: { images, videos } });
+            return res.ok(201, { data: { images, videos } });
         })
         .catch(res.serverError)
     },
@@ -142,10 +142,10 @@ module.exports = {
         .lean()
         .then(projects => {
             if (!projects || !projects.length) {
-                return res.notFound(new errors.NotFoundError("projects"))
+                return res.notFound(new errors.NotFoundError("projects"));
             }
 
-            return res.status(200).json({ status: 200, data: projects });
+            return res.ok(200, { data: projects });
         })
         .catch(res.serverError)
     },
@@ -163,7 +163,7 @@ module.exports = {
             //     return item2.created_date - item1.created_date;
             // });
 
-            return res.status(200).json({ status: 200, data: org });
+            return res.ok(200, { data: org });
         })
         .catch(res.serverError)
     }

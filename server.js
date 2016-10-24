@@ -1,6 +1,4 @@
 const express = require('express');
-require('./api/config/custom-responses')(express);
-
 const path = require('path');
 const session = require('express-session');
 const MongoStore = require('connect-mongo/es5')(session);
@@ -13,6 +11,8 @@ const server = require('http').Server(app);
 const socket = require('socket.io')(server);
 const events = require('./api/controllers/event')(socket)
 const dbConn = require('./api/config/connections').mongoose
+const customResponses = require('./api/config/custom-responses');
+// const customResponses = require('./api/config/custom-responses')(express);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT);
@@ -41,6 +41,8 @@ app.use(session({
     cookie: { maxAge: 3600000 },
     rolling: true
 }));
+
+app.use(customResponses)
 
 app.use('/auth', routes.auth)
 app.use('/organization', routes.organization);

@@ -33,7 +33,7 @@ module.exports = {
             }).lean()
         })
         .then(data => {
-            res.status(200).json({ status: 200, data });
+            res.ok({ data });
         })
         .catch(res.serverError)
     }

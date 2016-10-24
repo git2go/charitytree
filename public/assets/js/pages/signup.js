@@ -1,6 +1,7 @@
 "use strict";
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { browserHistory } from 'react-router';
 
 export default class Signup extends Component {
@@ -147,8 +148,9 @@ export default class Signup extends Component {
             url: '/auth/signup',
             data: formData,
             success: function(response) {
-                localStorage.token = response.token;
-                self.props.isLoggedIn();
+                // localStorage.token = response.token;
+                // self.props.isLoggedIn();
+                console.log('100:', 100)
                 self.navigateToDashboard();
             },
             error: function(xhr, status, err) {

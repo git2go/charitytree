@@ -16,7 +16,7 @@ module.exports = {
 
         return Project.create(newProject)
         .then(project => {
-            return res.status(201).send({ status: 201, results: project });
+            return res.ok(201, { data: project });
         })
         .catch(res.serverError)
     },
@@ -55,8 +55,8 @@ module.exports = {
 
             return [ project.save(), org.save() ]
         })
-        .then((project, org) => {
-            return res.status(201).json({ status: 201, results: project });
+        .spread((project, org) => {
+            return res.ok(201, { data: project });
         })
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)
@@ -102,7 +102,7 @@ module.exports = {
             return project.save();
         })
         .then(project => {
-            res.status(201).json({ status: 201, data: project });
+            res.ok(201, { data: project });
         })
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)

@@ -44,7 +44,7 @@ module.exports = {
             return user.save()
         })
         .then(user => {
-            return res.status(201).json({ status: 201, token: req.session.user.uid });
+            return res.ok(201, { token: req.session.user.uid });
         })
         .catch(errors.AlreadyInUseError, errors.NotPermittedError, res.badRequest)
         .catch(res.serverError)
@@ -66,15 +66,13 @@ module.exports = {
         })
         .spread((user, userType, validated) => {
             if (!validated) { //invalid password
-                throw new error.ValidationError("invalid credentials")
+                throw new error.ValidationError("Invalid username/password combination")
             }
 
             req.session.user = { uid: user._id, type: userType };
-            return res.status(201).json({ status: 201, token: req.session.user.uid });
+            return res.ok(201, { token: req.session.user.uid })
         })
-        .catch(errors.ValidationError, err => {
-            return res.status(401).json({ status: 401, message: "Invalid username/password combination" });
-        })
+        .catch(errors.ValidationError, res.badRequest)
         .catch(errors.NotFoundError, res.notFound)
         .catch(res.serverError)
     },
